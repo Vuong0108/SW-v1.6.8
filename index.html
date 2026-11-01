@@ -1,0 +1,1903 @@
+<!DOCTYPE html>
+<html lang="vi" data-theme="light">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Student Wallet – Quản lý tài chính sinh viên</title>
+    <!-- Google Fonts: Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Lucide Icons Local -->
+    <!-- Lucide Icons CDN -->
+    <!-- Thay vì gọi qua CDN unpkg.com -->
+    <script src="./lucide.min.js"></script>
+
+    <link rel="stylesheet" href="css/styles.css">
+
+</head>
+<body>
+    <div id="appShell" class="app-shell">
+        <!-- Mobile Backdrop Overlay -->
+        <div id="sidebarBackdrop" class="sidebar-backdrop" aria-hidden="true"></div>
+
+        <!-- ==================== SIDEBAR ==================== -->
+        <aside id="sidebar" class="sidebar" aria-label="Điều hướng chính">
+            <!-- Brand Header -->
+            <div class="sidebar__brand">
+                <div class="brand-identity">
+                    <div class="brand-logo" aria-hidden="true">
+                        <i data-lucide="wallet"></i>
+                    </div>
+                    <div class="brand-text">
+                        <span class="brand-title">Student Wallet</span>
+                        <span class="brand-subtitle">Personal Finance</span>
+                    </div>
+                </div>
+                <button id="sidebarToggleBtn"
+                        class="sidebar-toggle-btn"
+                        type="button"
+                        title="Thu gọn / Mở rộng thanh bên"
+                        aria-label="Thu gọn hoặc mở rộng thanh bên">
+                    <i data-lucide="panel-left-close" id="sidebarToggleIcon"></i>
+                </button>
+            </div>
+
+            <!-- Primary Menu -->
+            <nav class="sidebar__nav" aria-label="Menu chính">
+                <span class="nav-section-label">Menu chính</span>
+
+                <button type="button"
+                        class="nav-item is-active"
+                        data-route="dashboard"
+                        data-tooltip="Tổng quan – Dashboard">
+                    <span class="nav-item__icon"><i data-lucide="layout-dashboard"></i></span>
+                    <span class="nav-item__label">Tổng quan – Dashboard</span>
+                </button>
+
+                <button type="button"
+                        class="nav-item"
+                        data-route="transactions"
+                        data-tooltip="Thu chi – Transactions">
+                    <span class="nav-item__icon"><i data-lucide="arrow-left-right"></i></span>
+                    <span class="nav-item__label">Thu chi – Transactions</span>
+                </button>
+
+                <button type="button"
+                        class="nav-item"
+                        data-route="budget"
+                        data-tooltip="Ngân sách – Budget">
+                    <span class="nav-item__icon"><i data-lucide="pie-chart"></i></span>
+                    <span class="nav-item__label">Ngân sách – Budget</span>
+                </button>
+
+                <button type="button"
+                        class="nav-item"
+                        data-route="analytics"
+                        data-tooltip="Phân tích tài chính – Analytics">
+                    <span class="nav-item__icon"><i data-lucide="bar-chart-3"></i></span>
+                    <span class="nav-item__label">Phân tích tài chính – Analytics</span>
+                </button>
+
+                <button type="button"
+                        class="nav-item"
+                        data-route="savings-ai"
+                        data-tooltip="Tiết kiệm & AI – Savings & AI">
+                    <span class="nav-item__icon"><i data-lucide="sparkles"></i></span>
+                    <span class="nav-item__label">Tiết kiệm & AI – Savings & AI</span>
+                </button>
+            </nav>
+
+            <!-- Footer Menu -->
+            <div class="sidebar__footer">
+                <span class="nav-section-label">Tài khoản & Hệ thống</span>
+
+                <button type="button"
+                        class="nav-item"
+                        data-route="profile"
+                        data-tooltip="Hồ sơ cá nhân">
+                    <span class="nav-item__icon"><i data-lucide="user-circle"></i></span>
+                    <span class="nav-item__label">Hồ sơ cá nhân</span>
+                </button>
+
+                <button type="button"
+                        class="nav-item"
+                        data-route="settings"
+                        data-tooltip="Cài đặt">
+                    <span class="nav-item__icon"><i data-lucide="settings"></i></span>
+                    <span class="nav-item__label">Cài đặt</span>
+                </button>
+
+                <div class="app-version" title="Phiên bản Phase 6 – Complete Implementation">
+                    <span class="app-version__label">Phiên bản</span>
+                    <span class="app-version__badge">v1.61</span>
+                </div>
+            </div>
+        </aside>
+
+        <!-- ==================== MAIN WRAPPER ==================== -->
+        <!-- ==================== MOBILE BOTTOM NAV & FAB ==================== -->
+        <nav class="bottom-nav" aria-label="Điều hướng di động">
+            <button type="button" class="bottom-nav-item is-active" data-bottom-route="dashboard">
+                <i data-lucide="layout-dashboard" style="width: 22px; height: 22px;"></i>
+                <span>Tổng quan</span>
+            </button>
+            <button type="button" class="bottom-nav-item" data-bottom-route="transactions">
+                <i data-lucide="arrow-left-right" style="width: 22px; height: 22px;"></i>
+                <span>Thu chi</span>
+            </button>
+            <button type="button" class="bottom-nav-item" data-bottom-route="budget">
+                <i data-lucide="pie-chart" style="width: 22px; height: 22px;"></i>
+                <span>Ngân sách</span>
+            </button>
+            <button type="button" class="bottom-nav-item" data-bottom-route="savings-ai">
+                <i data-lucide="piggy-bank" style="width: 22px; height: 22px;"></i>
+                <span>Tiết kiệm</span>
+            </button>
+            <button type="button" class="bottom-nav-item" data-bottom-route="settings">
+                <i data-lucide="settings" style="width: 22px; height: 22px;"></i>
+                <span>Cài đặt</span>
+            </button>
+        </nav>
+
+        <button type="button" id="mobileFabBtn" class="mobile-fab" title="Thêm giao dịch mới">
+            <i data-lucide="plus" style="width: 26px; height: 26px;"></i>
+        </button>
+        <div class="main-wrapper">
+            <!-- ==================== HEADER ==================== -->
+            <header class="header">
+                <div class="header__left">
+                    <button id="mobileMenuBtn"
+                            class="mobile-menu-btn"
+                            type="button"
+                            aria-label="Mở menu điều hướng"
+                            aria-controls="sidebar"
+                            aria-expanded="false">
+                        <i data-lucide="menu"></i>
+                    </button>
+                    <h1 id="headerPageTitle" class="header__page-title">Tổng quan – Dashboard</h1>
+                </div>
+
+                <div class="header__right">
+                    <div class="header__date" title="Ngày tháng hiện tại">
+                        <i data-lucide="calendar" style="width: 16px; height: 16px;"></i>
+                        <time id="currentDateDisplay">--/--/----</time>
+                    </div>
+
+                    <button id="headerProfileBtn"
+                            class="user-avatar-btn"
+                            type="button"
+                            data-route="profile"
+                            title="Đi tới Hồ sơ cá nhân">
+                        <span class="avatar-circle">SV</span>
+                        <span class="avatar-label">Sinh viên</span>
+                    </button>
+                </div>
+            </header>
+
+            <!-- ==================== CONTENT AREA (7 PAGES) ==================== -->
+            <main id="mainContent" class="content-area">
+                <!-- 1. DASHBOARD PAGE -->
+                <section id="page-dashboard"
+                         class="page-view is-active"
+                         data-page="dashboard"
+                         aria-labelledby="title-dashboard">
+                    <div class="page-header">
+                        <div>
+                            <h2 id="title-dashboard" class="page-header__title">Tổng quan tài chính</h2>
+                            <p class="page-header__desc">
+                                Không gian theo dõi tổng hợp dòng tiền, số dư và tình hình chi tiêu thực tế từ cơ sở dữ liệu.
+                            </p>
+                        </div>
+                        <button type="button" class="btn-primary" data-route="transactions">
+                            <i data-lucide="plus-circle" style="width: 18px; height: 18px;"></i>
+                            <span>Ghi chép giao dịch</span>
+                        </button>
+                    </div>
+
+                    <!-- Welcome Card -->
+                    <div id="dashboardWelcomeCard" class="welcome-card">
+                        <span class="welcome-card__badge">
+                            <i data-lucide="compass" style="width: 14px; height: 14px;"></i>
+                            Trạng thái hệ thống
+                        </span>
+                        <h3 id="greetingHeading" class="welcome-card__title">
+                            Chào mừng bạn đến với Student Wallet!
+                        </h3>
+                        <p id="dashboardStatusText" class="welcome-card__text">
+                            Hệ thống lưu trữ IndexedDB đã sẵn sàng. Mọi giao dịch thu nhập, chi tiêu, hạn mức ngân sách và biểu đồ phân tích tài chính đều được đồng bộ tự động ngay trên trình duyệt.
+                        </p>
+                    </div>
+
+                    <!-- Real-Time Financial KPI Cards -->
+                    <div class="kpi-grid" aria-label="Chỉ số tài chính tổng quan">
+                        <article class="kpi-card">
+                            <div class="kpi-card__header">
+                                <span>Số dư thực tế</span>
+                                <span class="kpi-card__icon kpi-card__icon--balance">
+                                    <i data-lucide="wallet"></i>
+                                </span>
+                            </div>
+                            <div id="dashBalanceValue" class="kpi-card__value">0 ₫</div>
+                            <span class="kpi-card__sub">Tổng thu nhập trừ tổng chi tiêu</span>
+                        </article>
+
+                        <article class="kpi-card">
+                            <div class="kpi-card__header">
+                                <span>Tổng thu nhập</span>
+                                <span class="kpi-card__icon kpi-card__icon--income">
+                                    <i data-lucide="trending-up"></i>
+                                </span>
+                            </div>
+                            <div id="dashIncomeValue" class="kpi-card__value kpi-card__value--income">0 ₫</div>
+                            <span id="dashIncomeCount" class="kpi-card__sub">0 giao dịch thu nhập</span>
+                        </article>
+
+                        <article class="kpi-card">
+                            <div class="kpi-card__header">
+                                <span>Tổng chi tiêu</span>
+                                <span class="kpi-card__icon kpi-card__icon--expense">
+                                    <i data-lucide="trending-down"></i>
+                                </span>
+                            </div>
+                            <div id="dashExpenseValue" class="kpi-card__value kpi-card__value--expense">0 ₫</div>
+                            <span id="dashExpenseCount" class="kpi-card__sub">0 giao dịch chi tiêu</span>
+                        </article>
+                    </div>
+
+                    <!-- Dynamic Dashboard Mount Slot -->
+                    <div id="dashboardMountSlot">
+                        <!-- Khi chưa có giao dịch: Hiển thị Empty State + Quick Guide -->
+                        <div id="dashboardEmptySection">
+                            <div class="guide-grid">
+                                <article class="guide-step-card">
+                                    <div class="guide-step-card__top">
+                                        <div class="guide-step-card__icon">
+                                            <i data-lucide="arrow-left-right"></i>
+                                        </div>
+                                        <h4 class="guide-step-card__title">1. Sổ thu chi (Transactions)</h4>
+                                        <p class="guide-step-card__desc">
+                                            Bắt đầu ghi chép các khoản thu nhập, học bổng, trợ cấp và chi tiêu sinh hoạt hàng ngày.
+                                        </p>
+                                    </div>
+                                    <button type="button" class="btn-action" data-route="transactions">
+                                        <span>Thêm giao dịch đầu tiên</span>
+                                        <i data-lucide="arrow-right" style="width: 16px; height: 16px;"></i>
+                                    </button>
+                                </article>
+
+                                <article class="guide-step-card">
+                                    <div class="guide-step-card__top">
+                                        <div class="guide-step-card__icon">
+                                            <i data-lucide="pie-chart"></i>
+                                        </div>
+                                        <h4 class="guide-step-card__title">2. Thiết lập Ngân sách (Budget)</h4>
+                                        <p class="guide-step-card__desc">
+                                            Phân bổ hạn mức chi tiêu theo tháng và từng danh mục để kiểm soát dòng tiền hiệu quả.
+                                        </p>
+                                    </div>
+                                    <button type="button" class="btn-action" data-route="budget">
+                                        <span>Mở trang Ngân sách</span>
+                                        <i data-lucide="arrow-right" style="width: 16px; height: 16px;"></i>
+                                    </button>
+                                </article>
+
+                                <article class="guide-step-card">
+                                    <div class="guide-step-card__top">
+                                        <div class="guide-step-card__icon">
+                                            <i data-lucide="bar-chart-3"></i>
+                                        </div>
+                                        <h4 class="guide-step-card__title">3. Phân tích tài chính (Analytics)</h4>
+                                        <p class="guide-step-card__desc">
+                                            Quan sát biểu đồ biến động thu chi theo ngày/tuần/tháng, tỷ trọng danh mục và so sánh giữa các kỳ.
+                                        </p>
+                                    </div>
+                                    <button type="button" class="btn-action" data-route="analytics">
+                                        <span>Mở trang Phân tích</span>
+                                        <i data-lucide="arrow-right" style="width: 16px; height: 16px;"></i>
+                                    </button>
+                                </article>
+                            </div>
+
+                            <div class="empty-state-box">
+                                <div class="empty-state-box__icon">
+                                    <i data-lucide="inbox"></i>
+                                </div>
+                                <h3 class="empty-state-box__title">Chưa có giao dịch nào được ghi nhận</h3>
+                                <p class="empty-state-box__desc">
+                                    Cơ sở dữ liệu hiện đang trống. Hãy chuyển sang mục <strong>Thu chi – Transactions</strong> để tạo giao dịch đầu tiên và kích hoạt biểu đồ dòng tiền cùng danh sách lịch sử gần đây.
+                                </p>
+                                <button type="button" class="btn-primary" data-route="transactions">
+                                    <i data-lucide="plus" style="width: 16px; height: 16px;"></i>
+                                    <span>Tạo giao dịch ngay</span>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Khi đã có giao dịch: Hiển thị Biểu đồ Thu-Chi & Giao dịch gần đây -->
+                        <div id="dashboardActiveSection" class="dashboard-data-grid is-hidden">
+                            <!-- Biểu đồ dòng tiền theo ngày phát sinh -->
+                            <div class="surface-card">
+                                <div class="surface-card__header">
+                                    <h3 class="surface-card__title">
+                                        <i data-lucide="bar-chart-2" style="width: 18px; height: 18px;"></i>
+                                        <span>Biểu đồ Thu – Chi theo thời gian</span>
+                                    </h3>
+                                    <div class="chart-legend">
+                                        <span><i class="legend-dot legend-dot--income"></i>Thu nhập</span>
+                                        <span><i class="legend-dot legend-dot--expense"></i>Chi tiêu</span>
+                                    </div>
+                                </div>
+                                <div id="dashboardChartContainer" class="cashflow-chart-list"></div>
+                            </div>
+
+                            <!-- Giao dịch gần đây -->
+                            <div class="surface-card">
+                                <div class="surface-card__header">
+                                    <h3 class="surface-card__title">
+                                        <i data-lucide="clock" style="width: 18px; height: 18px;"></i>
+                                        <span>Giao dịch gần đây</span>
+                                    </h3>
+                                    <button type="button" class="btn-action" data-route="transactions">
+                                        <span>Xem tất cả</span>
+                                    </button>
+                                </div>
+                                <div id="dashboardRecentList" class="tx-list"></div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- 2. TRANSACTIONS PAGE -->
+                <section id="page-transactions"
+                         class="page-view"
+                         data-page="transactions"
+                         aria-labelledby="title-transactions">
+                    <div class="page-header">
+                        <div>
+                            <h2 id="title-transactions" class="page-header__title">Quản lý Thu chi</h2>
+                            <p class="page-header__desc">
+                                Thêm mới, chỉnh sửa, phân loại và tra cứu toàn bộ lịch sử giao dịch cá nhân của bạn.
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- Summary Bar inside Transactions Page -->
+                    <div class="kpi-grid">
+                        <article class="kpi-card">
+                            <div class="kpi-card__header">
+                                <span>Số dư khả dụng</span>
+                                <span class="kpi-card__icon kpi-card__icon--balance">
+                                    <i data-lucide="scale"></i>
+                                </span>
+                            </div>
+                            <div id="txPageBalanceValue" class="kpi-card__value">0 ₫</div>
+                            <span id="txPageTransferInfo" class="kpi-card__sub">Chuyển khoản nội bộ: 0 ₫</span>
+                        </article>
+
+                        <article class="kpi-card">
+                            <div class="kpi-card__header">
+                                <span>Tổng thu nhập</span>
+                                <span class="kpi-card__icon kpi-card__icon--income">
+                                    <i data-lucide="arrow-down-left"></i>
+                                </span>
+                            </div>
+                            <div id="txPageIncomeValue" class="kpi-card__value kpi-card__value--income">0 ₫</div>
+                            <span class="kpi-card__sub">Tính các giao dịch loại Thu nhập</span>
+                        </article>
+
+                        <article class="kpi-card">
+                            <div class="kpi-card__header">
+                                <span>Tổng chi tiêu</span>
+                                <span class="kpi-card__icon kpi-card__icon--expense">
+                                    <i data-lucide="arrow-up-right"></i>
+                                </span>
+                            </div>
+                            <div id="txPageExpenseValue" class="kpi-card__value kpi-card__value--expense">0 ₫</div>
+                            <span class="kpi-card__sub">Tính các giao dịch loại Chi tiêu</span>
+                        </article>
+                    </div>
+
+                    <!-- Phase 6: Workspace Switcher (Transactions / Allowances / Recurring Expenses) -->
+                    <div class="tx-workspace-tabs" aria-label="Chuyển đổi công cụ Thu chi, Trợ cấp và Định kỳ">
+                        <div class="type-segmented" role="tablist">
+                            <button type="button" class="type-seg-btn is-active" data-tx-workspace-tab="ledger">
+                                Sổ giao dịch thực tế
+                            </button>
+                            <button type="button" class="type-seg-btn" data-tx-workspace-tab="allowances">
+                                Quản lý Trợ cấp (Allowances)
+                            </button>
+                            <button type="button" class="type-seg-btn" data-tx-workspace-tab="recurring">
+                                Chi phí định kỳ (Recurring)
+                            </button>
+                        </div>
+                        <div class="tx-workspace-tabs__info">
+                            <i data-lucide="shield-check" style="width: 15px; height: 15px; color: var(--color-success);"></i>
+                            <span>Trợ cấp & Chi phí định kỳ chỉ tạo giao dịch thu/chi khi bạn bấm xác nhận.</span>
+                        </div>
+                    </div>
+
+                    <div id="transactionsMountSlot" class="transactions-layout">
+                        <!-- Left Column: Add / Edit Transaction Form -->
+                        <aside class="surface-card tx-form-card" aria-labelledby="txFormHeading">
+                            <div class="surface-card__header">
+                                <h3 id="txFormHeading" class="surface-card__title">
+                                    <i data-lucide="file-plus-2" style="width: 18px; height: 18px;"></i>
+                                    <span id="txFormTitleText">Thêm giao dịch mới</span>
+                                </h3>
+                            </div>
+
+                            <form id="transactionForm" novalidate>
+                                <input type="hidden" id="txIdInput" value="" />
+
+                                <!-- Loại giao dịch -->
+                                <div class="form-group">
+                                    <label class="form-label">Loại giao dịch <span class="req">*</span></label>
+                                    <div class="type-segmented" role="radiogroup" aria-label="Loại giao dịch">
+                                        <button type="button"
+                                                class="type-seg-btn is-active"
+                                                data-type="expense">
+                                            Chi tiêu
+                                        </button>
+                                        <button type="button"
+                                                class="type-seg-btn"
+                                                data-type="income">
+                                            Thu nhập
+                                        </button>
+                                        <button type="button"
+                                                class="type-seg-btn"
+                                                data-type="transfer">
+                                            Chuyển khoản
+                                        </button>
+                                    </div>
+                                    <input type="hidden" id="txTypeInput" value="expense" />
+                                </div>
+
+                                <!-- Số tiền (VND) -->
+                                <div class="form-group">
+                                    <label for="txAmountInput" class="form-label">Số tiền (VND) <span class="req">*</span></label>
+                                    <input type="number"
+                                           id="txAmountInput"
+                                           class="form-control"
+                                           placeholder="Ví dụ: 50000"
+                                           min="1"
+                                           step="1"
+                                           required />
+                                </div>
+
+                                <!-- Danh mục -->
+                                <div class="form-group">
+                                    <label for="txCategoryInput" class="form-label">Danh mục <span class="req">*</span></label>
+                                    <select id="txCategoryInput" class="form-control" required></select>
+                                </div>
+
+                                <!-- Ngày giao dịch -->
+                                <div class="form-group">
+                                    <label for="txDateInput" class="form-label">Ngày giao dịch <span class="req">*</span></label>
+                                    <input type="date"
+                                           id="txDateInput"
+                                           class="form-control"
+                                           required />
+                                </div>
+
+                                <!-- Ghi chú -->
+                                <div class="form-group">
+                                    <label for="txNoteInput" class="form-label">Ghi chú</label>
+                                    <textarea id="txNoteInput"
+                                              class="form-control"
+                                              placeholder="Nhập mô tả hoặc ghi chú chi tiết..."
+                                              maxlength="250"></textarea>
+                                </div>
+
+                                <div id="txFormError" class="form-error-msg is-hidden" role="alert"></div>
+
+                                <div class="form-actions">
+                                    <button type="submit" id="txSubmitBtn" class="btn-primary">
+                                        <i data-lucide="check" style="width: 16px; height: 16px;"></i>
+                                        <span id="txSubmitBtnText">Lưu giao dịch</span>
+                                    </button>
+                                    <button type="button" id="txCancelEditBtn" class="btn-secondary is-hidden">
+                                        Hủy sửa
+                                    </button>
+                                </div>
+                            </form>
+                        </aside>
+
+                        <!-- Right Column: Filters & Transaction List -->
+                        <div class="tx-list-column">
+                            <!-- Filter & Search Bar -->
+                            <div class="filter-bar" aria-label="Bộ lọc và tìm kiếm giao dịch">
+                                <div class="filter-bar__row">
+                                    <div>
+                                        <label for="filterSearchInput" class="form-label">Tìm kiếm ghi chú</label>
+                                        <input type="search"
+                                               id="filterSearchInput"
+                                               class="form-control"
+                                               placeholder="Nhập từ khóa ghi chú..." />
+                                    </div>
+
+                                    <div>
+                                        <label for="filterTypeSelect" class="form-label">Loại giao dịch</label>
+                                        <select id="filterTypeSelect" class="form-control">
+                                            <option value="all">Tất cả loại</option>
+                                            <option value="income">Thu nhập</option>
+                                            <option value="expense">Chi tiêu</option>
+                                            <option value="transfer">Chuyển khoản</option>
+                                        </select>
+                                    </div>
+
+                                    <div>
+                                        <label for="filterCategorySelect" class="form-label">Danh mục</label>
+                                        <select id="filterCategorySelect" class="form-control">
+                                            <option value="all">Tất cả danh mục</option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div class="filter-bar__row">
+                                    <div>
+                                        <label for="filterDateFrom" class="form-label">Từ ngày</label>
+                                        <input type="date" id="filterDateFrom" class="form-control" />
+                                    </div>
+
+                                    <div>
+                                        <label for="filterDateTo" class="form-label">Đến ngày</label>
+                                        <input type="date" id="filterDateTo" class="form-control" />
+                                    </div>
+
+                                    <div>
+                                        <label for="filterSortSelect" class="form-label">Sắp xếp theo ngày</label>
+                                        <select id="filterSortSelect" class="form-control">
+                                            <option value="newest">Mới nhất trước</option>
+                                            <option value="oldest">Cũ nhất trước</option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div class="filter-bar__footer">
+                                    <span id="filterResultCount">Hiển thị 0 giao dịch</span>
+                                    <button type="button" id="resetFilterBtn" class="btn-secondary" style="padding: 4px 10px; font-size: var(--fs-xs);">
+                                        <i data-lucide="rotate-ccw" style="width: 14px; height: 14px;"></i>
+                                        <span>Đặt lại bộ lọc</span>
+                                    </button>
+                                </div>
+                            </div>
+
+                            <!-- Transaction List Container -->
+                            <div id="txListContainer" class="tx-list"></div>
+
+                            <!-- Empty State when no transactions exist or no filter matches -->
+                            <!-- Empty State when no transactions exist or no filter matches -->
+                            <div id="txEmptyState" class="empty-state-box">
+                                <div class="empty-state-box__icon">
+                                    <i data-lucide="receipt"></i>
+                                </div>
+                                <h3 id="txEmptyTitle" class="empty-state-box__title">Danh sách giao dịch đang trống</h3>
+                                <p id="txEmptyDesc" class="empty-state-box__desc">
+                                    Chưa có giao dịch thu hoặc chi nào được lưu trữ. Hãy điền thông tin vào biểu mẫu bên cạnh để thêm giao dịch đầu tiên của bạn.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- PHASE 6A: ALLOWANCE MANAGEMENT PANEL -->
+                    <div id="allowancesMountPanel" class="transactions-layout is-hidden">
+                        <aside class="surface-card tx-form-card" aria-labelledby="alwFormHeading">
+                            <div class="surface-card__header">
+                                <h3 id="alwFormHeading" class="surface-card__title">
+                                    <i data-lucide="hand-coins" style="width: 18px; height: 18px;"></i>
+                                    <span id="alwFormTitleText">Thêm khoản trợ cấp</span>
+                                </h3>
+                            </div>
+
+                            <form id="allowanceForm" novalidate>
+                                <input type="hidden" id="alwIdInput" value="" />
+
+                                <div class="form-group">
+                                    <label for="alwNameInput" class="form-label">Tên khoản trợ cấp <span class="req">*</span></label>
+                                    <input type="text" id="alwNameInput" class="form-control" placeholder="Ví dụ: Trợ cấp sinh hoạt gia đình" maxlength="100" required />
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="alwAmountInput" class="form-label">Số tiền (VND) <span class="req">*</span></label>
+                                    <input type="number" id="alwAmountInput" class="form-control" placeholder="Ví dụ: 3000000" min="1" step="1" required />
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="alwFrequencySelect" class="form-label">Chu kỳ nhận <span class="req">*</span></label>
+                                    <select id="alwFrequencySelect" class="form-control" required>
+                                        <option value="monthly">Hàng tháng (Monthly)</option>
+                                        <option value="weekly">Hàng tuần (Weekly)</option>
+                                        <option value="once">Một lần (One-time)</option>
+                                    </select>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="alwCategorySelect" class="form-label">Danh mục thu nhập khi nhận <span class="req">*</span></label>
+                                    <select id="alwCategorySelect" class="form-control" required></select>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="alwStartDateInput" class="form-label">Ngày bắt đầu / Ngày dự kiến <span class="req">*</span></label>
+                                    <input type="date" id="alwStartDateInput" class="form-control" required />
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="alwNoteInput" class="form-label">Ghi chú</label>
+                                    <textarea id="alwNoteInput" class="form-control" placeholder="Ghi chú nguồn trợ cấp hoặc lịch nhận tiền..." maxlength="200"></textarea>
+                                </div>
+
+                                <div id="alwFormError" class="form-error-msg is-hidden" role="alert"></div>
+
+                                <div class="form-actions">
+                                    <button type="submit" id="alwSubmitBtn" class="btn-primary">
+                                        <i data-lucide="check" style="width: 16px; height: 16px;"></i>
+                                        <span id="alwSubmitBtnText">Lưu khoản trợ cấp</span>
+                                    </button>
+                                    <button type="button" id="alwCancelEditBtn" class="btn-secondary is-hidden">Hủy sửa</button>
+                                </div>
+                            </form>
+                        </aside>
+
+                        <div class="tx-list-column">
+                            <div class="surface-card">
+                                <div class="surface-card__header">
+                                    <div>
+                                        <h3 class="surface-card__title">
+                                            <i data-lucide="calendar-plus" style="width: 18px; height: 18px;"></i>
+                                            <span>Danh sách các khoản trợ cấp</span>
+                                        </h3>
+                                        <p style="font-size: var(--fs-xs); color: var(--text-muted); margin-top: 2px;">
+                                            Nhấn <strong>"Xác nhận đã nhận tiền"</strong> để tạo giao dịch Thu nhập thực tế cho kỳ hiện tại. Hệ thống tự động khóa chống xác nhận trùng.
+                                        </p>
+                                    </div>
+                                    <span id="alwCountBadge" class="phase-tag">0 khoản trợ cấp</span>
+                                </div>
+
+                                <div id="alwListContainer" class="budget-cards-stack"></div>
+
+                                <div id="alwEmptyState" class="empty-state-box" style="padding: var(--space-8) var(--space-4);">
+                                    <div class="empty-state-box__icon"><i data-lucide="hand-coins"></i></div>
+                                    <h3 class="empty-state-box__title">Chưa có khoản trợ cấp nào</h3>
+                                    <p class="empty-state-box__desc">
+                                        Thiết lập các khoản trợ cấp gia đình, học bổng định kỳ hoặc hỗ trợ một lần ở biểu mẫu bên trái để theo dõi và xác nhận khi tiền về ví.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- PHASE 6B: RECURRING EXPENSES PANEL -->
+                    <div id="recurringMountPanel" class="transactions-layout is-hidden">
+                        <aside class="surface-card tx-form-card" aria-labelledby="recFormHeading">
+                            <div class="surface-card__header">
+                                <h3 id="recFormHeading" class="surface-card__title">
+                                    <i data-lucide="calendar-clock" style="width: 18px; height: 18px;"></i>
+                                    <span id="recFormTitleText">Thêm chi phí định kỳ</span>
+                                </h3>
+                            </div>
+
+                            <form id="recurringForm" novalidate>
+                                <input type="hidden" id="recIdInput" value="" />
+
+                                <div class="form-group">
+                                    <label for="recNameInput" class="form-label">Tên khoản chi phí <span class="req">*</span></label>
+                                    <input type="text" id="recNameInput" class="form-control" placeholder="Ví dụ: Tiền thuê phòng trọ & Internet" maxlength="100" required />
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="recAmountInput" class="form-label">Số tiền định mức (VND) <span class="req">*</span></label>
+                                    <input type="number" id="recAmountInput" class="form-control" placeholder="Ví dụ: 1800000" min="1" step="1" required />
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="recFrequencySelect" class="form-label">Chu kỳ thanh toán <span class="req">*</span></label>
+                                    <select id="recFrequencySelect" class="form-control" required>
+                                        <option value="monthly">Hàng tháng (Monthly)</option>
+                                        <option value="weekly">Hàng tuần (Weekly)</option>
+                                        <option value="once">Một lần (One-time)</option>
+                                    </select>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="recCategorySelect" class="form-label">Danh mục chi tiêu <span class="req">*</span></label>
+                                    <select id="recCategorySelect" class="form-control" required></select>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="recStartDateInput" class="form-label">Hạn thanh toán / Ngày bắt đầu <span class="req">*</span></label>
+                                    <input type="date" id="recStartDateInput" class="form-control" required />
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="recNoteInput" class="form-label">Ghi chú</label>
+                                    <textarea id="recNoteInput" class="form-control" placeholder="Ghi chú chủ nhà, số phòng hoặc hạn đóng tiền..." maxlength="200"></textarea>
+                                </div>
+
+                                <div id="recFormError" class="form-error-msg is-hidden" role="alert"></div>
+
+                                <div class="form-actions">
+                                    <button type="submit" id="recSubmitBtn" class="btn-primary">
+                                        <i data-lucide="check" style="width: 16px; height: 16px;"></i>
+                                        <span id="recSubmitBtnText">Lưu chi phí định kỳ</span>
+                                    </button>
+                                    <button type="button" id="recCancelEditBtn" class="btn-secondary is-hidden">Hủy sửa</button>
+                                </div>
+                            </form>
+                        </aside>
+
+                        <div class="tx-list-column">
+                            <div class="surface-card">
+                                <div class="surface-card__header">
+                                    <div>
+                                        <h3 class="surface-card__title">
+                                            <i data-lucide="repeat" style="width: 18px; height: 18px;"></i>
+                                            <span>Danh sách chi phí định kỳ</span>
+                                        </h3>
+                                        <p style="font-size: var(--fs-xs); color: var(--text-muted); margin-top: 2px;">
+                                            Hệ thống <strong>không tự động trừ tiền</strong>. Chỉ khi bạn nhấn <strong>"Xác nhận đã thanh toán"</strong>, giao dịch Chi tiêu mới được ghi vào sổ.
+                                        </p>
+                                    </div>
+                                    <span id="recCountBadge" class="phase-tag">0 khoản định kỳ</span>
+                                </div>
+
+                                <div id="recListContainer" class="budget-cards-stack"></div>
+
+                                <div id="recEmptyState" class="empty-state-box" style="padding: var(--space-8) var(--space-4);">
+                                    <div class="empty-state-box__icon"><i data-lucide="calendar-clock"></i></div>
+                                    <h3 class="empty-state-box__title">Chưa có chi phí định kỳ nào</h3>
+                                    <p class="empty-state-box__desc">
+                                        Thêm các khoản cố định như tiền nhà trọ, điện nước, gói cước 4G, vé xe buýt tháng ở biểu mẫu bên trái để kiểm soát lịch thanh toán.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- 3. BUDGET PAGE (PHASE 3) -->
+                <section id="page-budget"
+                         class="page-view"
+                         data-page="budget"
+                         aria-labelledby="title-budget">
+                    <div class="page-header">
+                        <div>
+                            <h2 id="title-budget" class="page-header__title">Quản lý Ngân sách theo tháng</h2>
+                            <p class="page-header__desc">
+                                Thiết lập hạn mức ngân sách tổng và từng danh mục chi tiêu. Hệ thống tự động tổng hợp các khoản chi tiêu thực tế từ sổ giao dịch để theo dõi tiến độ.
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- Month / Year Selector & History Navigation Bar -->
+                    <div class="budget-period-toolbar" aria-label="Chọn kỳ ngân sách">
+                        <div class="budget-period-controls">
+                            <button type="button"
+                                    id="budgetPrevMonthBtn"
+                                    class="btn-secondary"
+                                    style="padding: 0.45rem 0.65rem;"
+                                    title="Tháng trước"
+                                    aria-label="Tháng trước">
+                                <i data-lucide="chevron-left" style="width: 16px; height: 16px;"></i>
+                            </button>
+
+                            <select id="budgetMonthSelect" class="form-control budget-period-select" aria-label="Chọn tháng">
+                                <option value="1">Tháng 01</option>
+                                <option value="2">Tháng 02</option>
+                                <option value="3">Tháng 03</option>
+                                <option value="4">Tháng 04</option>
+                                <option value="5">Tháng 05</option>
+                                <option value="6">Tháng 06</option>
+                                <option value="7">Tháng 07</option>
+                                <option value="8">Tháng 08</option>
+                                <option value="9">Tháng 09</option>
+                                <option value="10">Tháng 10</option>
+                                <option value="11">Tháng 11</option>
+                                <option value="12">Tháng 12</option>
+                            </select>
+
+                            <select id="budgetYearSelect" class="form-control budget-period-select" aria-label="Chọn năm"></select>
+
+                            <button type="button"
+                                    id="budgetNextMonthBtn"
+                                    class="btn-secondary"
+                                    style="padding: 0.45rem 0.65rem;"
+                                    title="Tháng sau"
+                                    aria-label="Tháng sau">
+                                <i data-lucide="chevron-right" style="width: 16px; height: 16px;"></i>
+                            </button>
+
+                            <button type="button"
+                                    id="budgetCurrentMonthBtn"
+                                    class="btn-action"
+                                    style="padding: 0.45rem 0.85rem;">
+                                <i data-lucide="calendar-check" style="width: 15px; height: 15px;"></i>
+                                <span>Tháng hiện tại</span>
+                            </button>
+                        </div>
+
+                        <!-- Quick jump to previous months with data -->
+                        <div id="budgetHistoryPillsContainer" class="budget-history-pills"></div>
+                    </div>
+
+                    <!-- Dynamic Alert Banners (80%, 100%, Exceeded) -->
+                    <div id="budgetAlertsContainer" class="budget-alerts-stack is-hidden" aria-live="polite"></div>
+
+                    <!-- Monthly Budget KPI Summary Cards -->
+                    <div class="kpi-grid" aria-label="Tổng quan ngân sách trong tháng">
+                        <article class="kpi-card">
+                            <div class="kpi-card__header">
+                                <span id="budgetKpiPeriodLabel">Tổng ngân sách tháng</span>
+                                <span class="kpi-card__icon kpi-card__icon--balance">
+                                    <i data-lucide="target"></i>
+                                </span>
+                            </div>
+                            <div id="budgetKpiTotalValue" class="kpi-card__value">0 ₫</div>
+                            <span id="budgetKpiTotalSub" class="kpi-card__sub">Chưa thiết lập ngân sách</span>
+                        </article>
+
+                        <article class="kpi-card">
+                            <div class="kpi-card__header">
+                                <span>Đã chi tiêu trong tháng</span>
+                                <span class="kpi-card__icon kpi-card__icon--expense">
+                                    <i data-lucide="flame"></i>
+                                </span>
+                            </div>
+                            <div id="budgetKpiSpentValue" class="kpi-card__value kpi-card__value--expense">0 ₫</div>
+                            <span id="budgetKpiSpentSub" class="kpi-card__sub">Chỉ tính giao dịch Chi tiêu (Expense)</span>
+                        </article>
+
+                        <article class="kpi-card">
+                            <div class="kpi-card__header">
+                                <span id="budgetKpiRemainingLabel">Ngân sách còn lại</span>
+                                <span class="kpi-card__icon kpi-card__icon--income">
+                                    <i data-lucide="shield-check"></i>
+                                </span>
+                            </div>
+                            <div id="budgetKpiRemainingValue" class="kpi-card__value">0 ₫</div>
+                            <span id="budgetKpiRemainingSub" class="kpi-card__sub">Tỷ lệ sử dụng: 0%</span>
+                        </article>
+                    </div>
+
+                    <!-- Main Budget Workspace: Left Form + Right Progress List -->
+                    <div id="budgetMountSlot" class="budget-layout">
+                        <!-- Left Column: Create / Edit Budget Form -->
+                        <aside class="surface-card budget-form-card" aria-labelledby="budgetFormHeading">
+                            <div class="surface-card__header">
+                                <h3 id="budgetFormHeading" class="surface-card__title">
+                                    <i data-lucide="sliders-horizontal" style="width: 18px; height: 18px;"></i>
+                                    <span id="budgetFormTitleText">Thiết lập ngân sách</span>
+                                </h3>
+                            </div>
+
+                            <form id="budgetForm" novalidate>
+                                <input type="hidden" id="budgetIdInput" value="" />
+
+                                <!-- Kỳ áp dụng đang chọn -->
+                                <div class="form-group">
+                                    <label class="form-label">Kỳ ngân sách áp dụng</label>
+                                    <input type="text"
+                                           id="budgetFormPeriodDisplay"
+                                           class="form-control"
+                                           readonly
+                                           style="background-color: var(--bg-muted); font-weight: var(--fw-semibold); cursor: default;" />
+                                </div>
+
+                                <!-- Phạm vi ngân sách: Ngân sách tổng vs Danh mục -->
+                                <div class="form-group">
+                                    <label class="form-label">Loại ngân sách <span class="req">*</span></label>
+                                    <div class="type-segmented type-segmented--two" role="radiogroup" aria-label="Phạm vi ngân sách">
+                                        <button type="button"
+                                                class="type-seg-btn is-active"
+                                                data-budget-scope="overall">
+                                            Ngân sách tổng tháng
+                                        </button>
+                                        <button type="button"
+                                                class="type-seg-btn"
+                                                data-budget-scope="category">
+                                            Theo danh mục chi
+                                        </button>
+                                    </div>
+                                    <input type="hidden" id="budgetScopeInput" value="overall" />
+                                </div>
+
+                                <!-- Chọn danh mục chi tiêu (chỉ hiện khi chọn scope = category) -->
+                                <div id="budgetCategoryGroup" class="form-group is-hidden">
+                                    <label for="budgetCategorySelect" class="form-label">Danh mục chi tiêu <span class="req">*</span></label>
+                                    <select id="budgetCategorySelect" class="form-control"></select>
+                                </div>
+
+                                <!-- Hạn mức ngân sách (VND) -->
+                                <div class="form-group">
+                                    <label for="budgetAmountInput" class="form-label">Hạn mức ngân sách (VND) <span class="req">*</span></label>
+                                    <input type="number"
+                                           id="budgetAmountInput"
+                                           class="form-control"
+                                           placeholder="Ví dụ: 3000000"
+                                           min="1"
+                                           step="1"
+                                           required />
+                                </div>
+
+                                <!-- Ghi chú ngân sách -->
+                                <div class="form-group">
+                                    <label for="budgetNoteInput" class="form-label">Ghi chú hạn mức</label>
+                                    <textarea id="budgetNoteInput"
+                                              class="form-control"
+                                              placeholder="Ghi chú mục tiêu kiểm soát chi tiêu trong tháng..."
+                                              maxlength="200"></textarea>
+                                </div>
+
+                                <div id="budgetFormError" class="form-error-msg is-hidden" role="alert"></div>
+
+                                <div class="form-actions">
+                                    <button type="submit" id="budgetSubmitBtn" class="btn-primary">
+                                        <i data-lucide="check" style="width: 16px; height: 16px;"></i>
+                                        <span id="budgetSubmitBtnText">Lưu ngân sách</span>
+                                    </button>
+                                    <button type="button" id="budgetCancelEditBtn" class="btn-secondary is-hidden">
+                                        Hủy sửa
+                                    </button>
+                                </div>
+                            </form>
+                        </aside>
+
+                        <!-- Right Column: Overall Budget Card + Category Budgets List -->
+                        <div class="budget-content-column">
+                            <!-- Overall Monthly Budget Container -->
+                            <div id="budgetOverallSection" class="budget-cards-stack" style="margin-bottom: var(--space-5);"></div>
+
+                            <!-- Category Budgets Header & List -->
+                            <div class="surface-card">
+                                <div class="surface-card__header">
+                                    <h3 class="surface-card__title">
+                                        <i data-lucide="layers" style="width: 18px; height: 18px;"></i>
+                                        <span>Ngân sách theo danh mục chi tiêu</span>
+                                    </h3>
+                                    <span id="budgetCategoryCountBadge" class="phase-tag">0 danh mục</span>
+                                </div>
+
+                                <div id="budgetCategoryList" class="budget-cards-stack"></div>
+
+                                <!-- Empty State when no budgets configured for selected month/year -->
+                                <div id="budgetEmptyState" class="empty-state-box" style="padding: var(--space-8) var(--space-4);">
+                                    <div class="empty-state-box__icon">
+                                        <i data-lucide="wallet-cards"></i>
+                                    </div>
+                                    <h3 id="budgetEmptyTitle" class="empty-state-box__title">Chưa có ngân sách cho kỳ này</h3>
+                                    <p id="budgetEmptyDesc" class="empty-state-box__desc">
+                                        Bạn chưa thiết lập ngân sách tổng hoặc ngân sách danh mục nào cho tháng đang chọn. Hãy sử dụng biểu mẫu bên trái để bắt đầu kiểm soát chi tiêu.
+                                    </p>
+                                </div>
+                            </div>
+
+                            <!-- Unbudgeted Expenses in Selected Month (Transparency helper) -->
+                            <div id="unbudgetedExpensesCard" class="surface-card is-hidden" style="margin-top: var(--space-5);">
+                                <div class="surface-card__header">
+                                    <h3 class="surface-card__title">
+                                        <i data-lucide="info" style="width: 18px; height: 18px;"></i>
+                                        <span>Khoản chi tiêu phát sinh chưa đặt hạn mức riêng</span>
+                                    </h3>
+                                </div>
+                                <div id="unbudgetedExpensesList" class="tx-list"></div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- 4. ANALYTICS PAGE (PHASE 4 FULL IMPLEMENTATION) -->
+                <section id="page-analytics"
+                         class="page-view"
+                         data-page="analytics"
+                         aria-labelledby="title-analytics">
+                    <div class="page-header">
+                        <div>
+                            <h2 id="title-analytics" class="page-header__title">Phân tích tài chính</h2>
+                            <p class="page-header__desc">
+                                Đánh giá xu hướng thu – chi theo ngày, tuần, tháng; phân tích tỷ trọng danh mục chi tiêu và đối chiếu biến động tài chính giữa các kỳ.
+                            </p>
+                        </div>
+                    </div>
+
+                    <div id="analyticsMountSlot">
+                        <!-- Filter Toolbar -->
+                        <div class="analytics-toolbar" aria-label="Bộ lọc thời gian phân tích">
+                            <div class="analytics-toolbar__top">
+                                <div class="type-segmented type-segmented--four" role="radiogroup" aria-label="Chế độ lọc thời gian">
+                                    <button type="button"
+                                            class="type-seg-btn is-active"
+                                            data-analytics-mode="month">
+                                        Theo tháng
+                                    </button>
+                                    <button type="button"
+                                            class="type-seg-btn"
+                                            data-analytics-mode="year">
+                                        Theo năm
+                                    </button>
+                                    <button type="button"
+                                            class="type-seg-btn"
+                                            data-analytics-mode="range">
+                                        Khoảng thời gian
+                                    </button>
+                                    <button type="button"
+                                            class="type-seg-btn"
+                                            data-analytics-mode="all">
+                                        Toàn thời gian
+                                    </button>
+                                </div>
+
+                                <div class="analytics-filter-controls">
+                                    <!-- Chọn Tháng (hiện khi mode = month) -->
+                                    <div id="analyticsMonthCtrl" class="analytics-filter-group">
+                                        <label for="analyticsMonthSelect">Tháng:</label>
+                                        <select id="analyticsMonthSelect" class="form-control budget-period-select">
+                                            <option value="1">Tháng 01</option>
+                                            <option value="2">Tháng 02</option>
+                                            <option value="3">Tháng 03</option>
+                                            <option value="4">Tháng 04</option>
+                                            <option value="5">Tháng 05</option>
+                                            <option value="6">Tháng 06</option>
+                                            <option value="7">Tháng 07</option>
+                                            <option value="8">Tháng 08</option>
+                                            <option value="9">Tháng 09</option>
+                                            <option value="10">Tháng 10</option>
+                                            <option value="11">Tháng 11</option>
+                                            <option value="12">Tháng 12</option>
+                                        </select>
+                                    </div>
+
+                                    <!-- Chọn Năm (hiện khi mode = month hoặc year) -->
+                                    <div id="analyticsYearCtrl" class="analytics-filter-group">
+                                        <label for="analyticsYearSelect">Năm:</label>
+                                        <select id="analyticsYearSelect" class="form-control budget-period-select"></select>
+                                    </div>
+
+                                    <!-- Chọn Khoảng ngày (hiện khi mode = range) -->
+                                    <div id="analyticsRangeCtrl" class="analytics-filter-group is-hidden">
+                                        <label for="analyticsDateFrom">Từ:</label>
+                                        <input type="date" id="analyticsDateFrom" class="form-control" style="width: auto; padding: 0.45rem 0.65rem;" />
+                                        <label for="analyticsDateTo">Đến:</label>
+                                        <input type="date" id="analyticsDateTo" class="form-control" style="width: auto; padding: 0.45rem 0.65rem;" />
+                                    </div>
+
+                                    <button type="button"
+                                            id="analyticsResetFilterBtn"
+                                            class="btn-secondary"
+                                            style="padding: 0.45rem 0.75rem; font-size: var(--fs-xs);"
+                                            title="Về tháng hiện tại">
+                                        <i data-lucide="rotate-ccw" style="width: 14px; height: 14px;"></i>
+                                        <span>Kỳ hiện tại</span>
+                                    </button>
+                                </div>
+                            </div>
+
+                            <div class="filter-bar__footer" style="padding-top: var(--space-2); margin: 0;">
+                                <span id="analyticsActiveRangeLabel">Đang phân tích: --</span>
+                                <span id="analyticsFilteredCountLabel">0 giao dịch thu/chi hợp lệ</span>
+                            </div>
+                        </div>
+
+                        <!-- Analytics KPI Cards (4 Cards: Income, Expense, Net Balance, Largest Expense Category) -->
+                        <div class="kpi-grid" aria-label="Chỉ số phân tích tài chính">
+                            <article class="kpi-card">
+                                <div class="kpi-card__header">
+                                    <span>Tổng thu nhập kỳ chọn</span>
+                                    <span class="kpi-card__icon kpi-card__icon--income">
+                                        <i data-lucide="trending-up"></i>
+                                    </span>
+                                </div>
+                                <div id="anKpiIncomeValue" class="kpi-card__value kpi-card__value--income">0 ₫</div>
+                                <span id="anKpiIncomeSub" class="kpi-card__sub">0 giao dịch thu nhập</span>
+                            </article>
+
+                            <article class="kpi-card">
+                                <div class="kpi-card__header">
+                                    <span>Tổng chi tiêu kỳ chọn</span>
+                                    <span class="kpi-card__icon kpi-card__icon--expense">
+                                        <i data-lucide="trending-down"></i>
+                                    </span>
+                                </div>
+                                <div id="anKpiExpenseValue" class="kpi-card__value kpi-card__value--expense">0 ₫</div>
+                                <span id="anKpiExpenseSub" class="kpi-card__sub">0 giao dịch chi tiêu</span>
+                            </article>
+
+                            <article class="kpi-card">
+                                <div class="kpi-card__header">
+                                    <span>Số dư ròng (Thu – Chi)</span>
+                                    <span class="kpi-card__icon kpi-card__icon--balance">
+                                        <i data-lucide="wallet"></i>
+                                    </span>
+                                </div>
+                                <div id="anKpiNetValue" class="kpi-card__value">0 ₫</div>
+                                <span id="anKpiNetSub" class="kpi-card__sub">Tỷ lệ tiết kiệm: 0%</span>
+                            </article>
+
+                            <article class="kpi-card">
+                                <div class="kpi-card__header">
+                                    <span>Danh mục chi lớn nhất</span>
+                                    <span class="kpi-card__icon kpi-card__icon--warning">
+                                        <i data-lucide="award"></i>
+                                    </span>
+                                </div>
+                                <div id="anKpiTopCatName" class="kpi-card__value" style="font-size: var(--fs-lg);">Chưa có dữ liệu</div>
+                                <span id="anKpiTopCatSub" class="kpi-card__sub">0 ₫ (0% tổng chi tiêu)</span>
+                            </article>
+                        </div>
+
+                        <!-- Empty state when there are no income/expense transactions in the selected filter -->
+                        <div id="analyticsEmptyState" class="empty-state-box">
+                            <div class="empty-state-box__icon">
+                                <i data-lucide="line-chart"></i>
+                            </div>
+                            <h3 id="analyticsEmptyTitle" class="empty-state-box__title">Chưa có dữ liệu thu – chi trong kỳ đang chọn</h3>
+                            <p id="analyticsEmptyDesc" class="empty-state-box__desc">
+                                Hệ thống chỉ tổng hợp các giao dịch Thu nhập (Income) và Chi tiêu (Expense) thực tế từ cơ sở dữ liệu (không tính giao dịch Chuyển khoản nội bộ). Hãy thêm giao dịch hoặc đổi bộ lọc thời gian để xem biểu đồ phân tích.
+                            </p>
+                            <button type="button" class="btn-primary" data-route="transactions">
+                                <i data-lucide="plus" style="width: 16px; height: 16px;"></i>
+                                <span>Thêm giao dịch Thu – Chi</span>
+                            </button>
+                        </div>
+
+                        <!-- Active Analytics Workspace (Charts + Category Breakdown + Monthly Comparison) -->
+                        <div id="analyticsActiveWorkspace" class="is-hidden">
+                            <div class="analytics-main-grid">
+                                <!-- Left Card: Cashflow Chart by Day / Week / Month -->
+                                <article class="surface-card">
+                                    <div class="surface-card__header">
+                                        <h3 class="surface-card__title">
+                                            <i data-lucide="bar-chart-3" style="width: 18px; height: 18px;"></i>
+                                            <span>Biểu đồ Thu – Chi theo thời gian</span>
+                                        </h3>
+
+                                        <div class="type-segmented" role="radiogroup" aria-label="Đơn vị thời gian biểu đồ">
+                                            <button type="button"
+                                                    class="type-seg-btn is-active"
+                                                    data-analytics-granularity="day">
+                                                Theo ngày
+                                            </button>
+                                            <button type="button"
+                                                    class="type-seg-btn"
+                                                    data-analytics-granularity="week">
+                                                Theo tuần
+                                            </button>
+                                            <button type="button"
+                                                    class="type-seg-btn"
+                                                    data-analytics-granularity="month">
+                                                Theo tháng
+                                            </button>
+                                        </div>
+                                    </div>
+
+                                    <div class="chart-legend" style="justify-content: space-between; flex-wrap: wrap;">
+                                        <div>
+                                            <span><i class="legend-dot legend-dot--income"></i>Thu nhập (Income)</span>
+                                            <span style="margin-left: var(--space-3);"><i class="legend-dot legend-dot--expense"></i>Chi tiêu (Expense)</span>
+                                        </div>
+                                        <span id="analyticsTimelineMetaText" style="color: var(--text-muted);">Đơn vị: VND</span>
+                                    </div>
+
+                                    <!-- Vertical Grouped Bar Chart -->
+                                    <div id="analyticsTimelineChartContainer" class="analytics-chart-wrapper"></div>
+                                </article>
+
+                                <!-- Right Card: Category Expense Breakdown & Largest Category -->
+                                <article class="surface-card">
+                                    <div class="surface-card__header">
+                                        <h3 class="surface-card__title">
+                                            <i data-lucide="pie-chart" style="width: 18px; height: 18px;"></i>
+                                            <span>Phân tích chi tiêu theo danh mục</span>
+                                        </h3>
+                                        <span id="analyticsCategoryCountBadge" class="phase-tag">0 danh mục</span>
+                                    </div>
+
+                                    <div id="analyticsCategoryContainer" class="category-analysis-layout"></div>
+                                </article>
+                            </div>
+
+                            <!-- Bottom Card: Multi-Month Financial Comparison Table -->
+                            <article class="surface-card">
+                                <div class="surface-card__header">
+                                    <div>
+                                        <h3 class="surface-card__title">
+                                            <i data-lucide="git-compare" style="width: 18px; height: 18px;"></i>
+                                            <span>So sánh tình hình tài chính giữa các tháng</span>
+                                        </h3>
+                                        <p style="font-size: var(--fs-xs); color: var(--text-muted); margin-top: 2px;">
+                                            Đối chiếu tổng thu nhập, tổng chi tiêu, số dư ròng và mức tăng/giảm chi tiêu so với tháng liền trước.
+                                        </p>
+                                    </div>
+                                    <span id="analyticsComparisonBadge" class="phase-tag">0 tháng có dữ liệu</span>
+                                </div>
+
+                                <div class="comparison-table-wrap">
+                                    <table class="comparison-table" aria-label="Bảng so sánh tài chính giữa các tháng">
+                                        <thead>
+                                            <tr>
+                                                <th>Tháng / Năm</th>
+                                                <th>Tổng thu nhập</th>
+                                                <th>Tổng chi tiêu</th>
+                                                <th>Số dư ròng</th>
+                                                <th>Tỷ lệ tiết kiệm</th>
+                                                <th>Biến động chi tiêu (so với kỳ trước)</th>
+                                                <th>Danh mục chi lớn nhất</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="analyticsComparisonTableBody"></tbody>
+                                    </table>
+                                </div>
+                            </article>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- 5. SAVINGS & AI PAGE -->
+                <!-- 5. SAVINGS & AI PAGE (PHASE 5 FULL IMPLEMENTATION) -->
+                <section id="page-savings-ai"
+                         class="page-view"
+                         data-page="savings-ai"
+                         aria-labelledby="title-savings-ai">
+                    <div class="page-header">
+                        <div>
+                            <h2 id="title-savings-ai" class="page-header__title">Tiết kiệm & Trợ lý AI</h2>
+                            <p class="page-header__desc">
+                                Quản lý mục tiêu tích lũy độc lập (không tính trùng vào chi tiêu/số dư) và phân tích sức khỏe tài chính thực tế cùng AI Assistant.
+                            </p>
+                        </div>
+                        <div class="type-segmented type-segmented--two" role="tablist" aria-label="Chuyển đổi Tiết kiệm và AI">
+                            <button type="button" class="type-seg-btn is-active" data-savings-ai-tab="goals">
+                                Quỹ mục tiêu tiết kiệm
+                            </button>
+                            <button type="button" class="type-seg-btn" data-savings-ai-tab="ai">
+                                Trợ lý phân tích AI
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Savings & Balance Transparency KPIs -->
+                    <div class="kpi-grid" aria-label="Chỉ số Quỹ tiết kiệm và Số dư">
+                        <article class="kpi-card">
+                            <div class="kpi-card__header">
+                                <span>Tổng tiền trong mục tiêu</span>
+                                <span class="kpi-card__icon kpi-card__icon--income"><i data-lucide="piggy-bank"></i></span>
+                            </div>
+                            <div id="savKpiTotalSaved" class="kpi-card__value kpi-card__value--income">0 ₫</div>
+                            <span id="savKpiTotalTargetSub" class="kpi-card__sub">Mục tiêu tổng: 0 ₫ (0%)</span>
+                        </article>
+
+                        <article class="kpi-card">
+                            <div class="kpi-card__header">
+                                <span>Số dư ngoài quỹ tiết kiệm</span>
+                                <span class="kpi-card__icon kpi-card__icon--balance"><i data-lucide="wallet"></i></span>
+                            </div>
+                            <div id="savKpiUnallocatedBalance" class="kpi-card__value">0 ₫</div>
+                            <span id="savKpiRealBalanceSub" class="kpi-card__sub">Số dư thực tế (Thu - Chi): 0 ₫</span>
+                        </article>
+
+                        <article class="kpi-card">
+                            <div class="kpi-card__header">
+                                <span>Trạng thái các mục tiêu</span>
+                                <span class="kpi-card__icon kpi-card__icon--warning"><i data-lucide="flag"></i></span>
+                            </div>
+                            <div id="savKpiGoalCounts" class="kpi-card__value">0 mục tiêu</div>
+                            <span id="savKpiCompletedSub" class="kpi-card__sub">0 đang thực hiện • 0 hoàn thành</span>
+                        </article>
+                    </div>
+
+                    <div id="savingsAiMountSlot">
+                        <!-- TAB 1: SAVINGS GOALS WORKSPACE -->
+                        <div id="savingsGoalsTabPanel" class="savings-layout">
+                            <!-- Left Column: Create / Edit Goal Form -->
+                            <aside class="surface-card savings-form-card" aria-labelledby="savingsFormHeading">
+                                <div class="surface-card__header">
+                                    <h3 id="savingsFormHeading" class="surface-card__title">
+                                        <i data-lucide="target" style="width: 18px; height: 18px;"></i>
+                                        <span id="savingsFormTitleText">Tạo mục tiêu tiết kiệm</span>
+                                    </h3>
+                                </div>
+
+                                <form id="savingsGoalForm" novalidate>
+                                    <input type="hidden" id="sgIdInput" value="" />
+
+                                    <div class="form-group">
+                                        <label for="sgNameInput" class="form-label">Tên mục tiêu <span class="req">*</span></label>
+                                        <input type="text" id="sgNameInput" class="form-control" placeholder="Ví dụ: Mua Laptop học lập trình" maxlength="100" required />
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label for="sgTargetAmountInput" class="form-label">Số tiền mục tiêu (VND) <span class="req">*</span></label>
+                                        <input type="number" id="sgTargetAmountInput" class="form-control" placeholder="Ví dụ: 15000000" min="1" step="1" required />
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label for="sgIconSelect" class="form-label">Biểu tượng đại diện</label>
+                                        <select id="sgIconSelect" class="form-control">
+                                            <option value="piggy-bank">Heo đất tiết kiệm</option>
+                                            <option value="laptop">Laptop & Thiết bị công nghệ</option>
+                                            <option value="graduation-cap">Học phí & Khóa học</option>
+                                            <option value="book-open">Sách & Tài liệu chuyên ngành</option>
+                                            <option value="smartphone">Điện thoại & Phụ kiện</option>
+                                            <option value="shield">Quỹ dự phòng khẩn cấp</option>
+                                            <option value="plane">Du lịch & Trải nghiệm</option>
+                                            <option value="gift">Quà tặng & Gia đình</option>
+                                        </select>
+                                    </div>
+
+                                    <div class="filter-bar__row" style="margin-bottom: var(--space-4);">
+                                        <div>
+                                            <label for="sgStartDateInput" class="form-label">Ngày bắt đầu <span class="req">*</span></label>
+                                            <input type="date" id="sgStartDateInput" class="form-control" required />
+                                        </div>
+                                        <div>
+                                            <label for="sgTargetDateInput" class="form-label">Hạn hoàn thành <span class="req">*</span></label>
+                                            <input type="date" id="sgTargetDateInput" class="form-control" required />
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label for="sgDescInput" class="form-label">Mô tả kế hoạch</label>
+                                        <textarea id="sgDescInput" class="form-control" placeholder="Ghi chú kế hoạch trích tiền cho mục tiêu này..." maxlength="250"></textarea>
+                                    </div>
+
+                                    <p style="font-size: var(--fs-xs); color: var(--text-muted); margin-bottom: var(--space-3);">
+                                        * Lưu ý: Khi mới tạo, số tiền hiện có mặc định là <strong>0 ₫</strong>. Bạn sẽ chủ động xác nhận Nạp/Rút tiền trực tiếp trên thẻ mục tiêu.
+                                    </p>
+
+                                    <div id="sgFormError" class="form-error-msg is-hidden" role="alert"></div>
+
+                                    <div class="form-actions">
+                                        <button type="submit" id="sgSubmitBtn" class="btn-primary">
+                                            <i data-lucide="check" style="width: 16px; height: 16px;"></i>
+                                            <span id="sgSubmitBtnText">Lưu mục tiêu</span>
+                                        </button>
+                                        <button type="button" id="sgCancelEditBtn" class="btn-secondary is-hidden">Hủy sửa</button>
+                                    </div>
+                                </form>
+                            </aside>
+
+                            <!-- Right Column: Goals List & Contribution History -->
+                            <div class="savings-list-column">
+                                <div class="filter-bar" style="flex-direction: row; align-items: center; justify-content: space-between; flex-wrap: wrap;">
+                                    <div class="type-segmented" role="group" aria-label="Lọc trạng thái mục tiêu">
+                                        <button type="button" class="type-seg-btn is-active" data-goal-filter="all">Tất cả</button>
+                                        <button type="button" class="type-seg-btn" data-goal-filter="active">Đang thực hiện</button>
+                                        <button type="button" class="type-seg-btn" data-goal-filter="completed">Đã hoàn thành</button>
+                                    </div>
+                                    <span id="sgFilterCountLabel" style="font-size: var(--fs-xs); color: var(--text-secondary);">Hiển thị 0 mục tiêu</span>
+                                </div>
+
+                                <div id="savingsGoalsListContainer" class="budget-cards-stack"></div>
+
+                                <div id="savingsGoalsEmptyState" class="empty-state-box">
+                                    <div class="empty-state-box__icon"><i data-lucide="piggy-bank"></i></div>
+                                    <h3 id="sgEmptyTitle" class="empty-state-box__title">Chưa có mục tiêu tiết kiệm nào</h3>
+                                    <p id="sgEmptyDesc" class="empty-state-box__desc">
+                                        Hãy sử dụng biểu mẫu bên trái để thiết lập mục tiêu đầu tiên. Tiền nạp vào mục tiêu được theo dõi riêng biệt, không bị tính trùng thành khoản chi tiêu.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- TAB 2: AI FINANCIAL ASSISTANT WORKSPACE -->
+                        <div id="aiAssistantTabPanel" class="is-hidden">
+                            <!-- Privacy & Architecture Transparency Bar -->
+                            <div class="budget-period-toolbar" style="margin-bottom: var(--space-5);">
+                                <div style="display: flex; align-items: center; gap: var(--space-3); flex-wrap: wrap;">
+                                    <span class="budget-status-badge budget-status-badge--primary">
+                                        <i data-lucide="cpu" style="width: 13px; height: 13px;"></i>
+                                        Local Deterministic Financial Engine (100% Offline)
+                                    </span>
+                                    <span style="font-size: var(--fs-xs); color: var(--text-secondary);">
+                                        Phân tích trực tiếp từ dữ liệu thật trong IndexedDB. Không giả lập câu trả lời mẫu và không tự ý gửi dữ liệu ra ngoài.
+                                    </span>
+                                </div>
+                                <button type="button" id="toggleAiApiConfigBtn" class="btn-secondary" style="padding: 5px 12px; font-size: var(--fs-xs);">
+                                    <i data-lucide="key" style="width: 14px; height: 14px;"></i>
+                                    <span>Cấu hình kết nối API ngoài (Tùy chọn)</span>
+                                </button>
+                            </div>
+
+                            <!-- Optional External API Configuration Drawer -->
+                            <div id="aiApiConfigDrawer" class="surface-card is-hidden" style="margin-bottom: var(--space-5);">
+                                <div class="surface-card__header">
+                                    <h3 class="surface-card__title">
+                                        <i data-lucide="shield-alert" style="width: 18px; height: 18px;"></i>
+                                        <span>Kiến trúc tích hợp AI API bên ngoài & Quyền riêng tư</span>
+                                    </h3>
+                                </div>
+                                <p style="font-size: var(--fs-xs); color: var(--text-secondary);">
+                                    Mặc định ứng dụng sử dụng bộ máy phân tích toán học nội bộ (Offline). Nếu muốn kết nối tới cổng LLM bên ngoài (như OpenAI/Gemini совместимый endpoint), bạn cần cấu hình dưới đây và cấp quyền đồng ý rõ ràng.
+                                </p>
+                                <div class="filter-bar__row">
+                                    <div>
+                                        <label for="aiApiEndpointInput" class="form-label">API Endpoint (Tùy chọn)</label>
+                                        <input type="url" id="aiApiEndpointInput" class="form-control" placeholder="https://api.openai.com/v1/chat/completions" />
+                                    </div>
+                                    <div>
+                                        <label for="aiApiKeyInput" class="form-label">API Key</label>
+                                        <input type="password" id="aiApiKeyInput" class="form-control" placeholder="sk-..." />
+                                    </div>
+                                </div>
+                                <label style="display: flex; align-items: center; gap: var(--space-2); font-size: var(--fs-xs); color: var(--text-primary); cursor: pointer;">
+                                    <input type="checkbox" id="aiUserConsentCheckbox" />
+                                    <span>Tôi đồng ý cho phép gửi bản tóm tắt số liệu tài chính (không gồm thông tin định danh) tới Endpoint trên khi tôi nhấn gửi câu hỏi.</span>
+                                </label>
+                            </div>
+
+                            <div class="ai-assistant-grid">
+                                <!-- Left Card: Automated Real-Data Insights -->
+                                <article class="surface-card">
+                                    <div class="surface-card__header">
+                                        <h3 class="surface-card__title">
+                                            <i data-lucide="sparkles" style="width: 18px; height: 18px;"></i>
+                                            <span>Báo cáo chẩn đoán tài chính tự động</span>
+                                        </h3>
+                                        <button type="button" id="refreshAiInsightsBtn" class="btn-action" style="padding: 4px 10px; font-size: var(--fs-xs);">
+                                            <i data-lucide="refresh-cw" style="width: 14px; height: 14px;"></i>
+                                            <span>Phân tích lại</span>
+                                        </button>
+                                    </div>
+                                    <div id="aiAutoInsightsContainer" class="ai-insight-list"></div>
+                                </article>
+
+                                <!-- Right Card: Interactive Financial Q&A -->
+                                <article class="surface-card">
+                                    <div class="surface-card__header">
+                                        <h3 class="surface-card__title">
+                                            <i data-lucide="message-square-text" style="width: 18px; height: 18px;"></i>
+                                            <span>Hỏi đáp tài chính trên dữ liệu thực tế</span>
+                                        </h3>
+                                        <button type="button" id="clearAiChatBtn" class="btn-secondary" style="padding: 4px 10px; font-size: var(--fs-xs);">
+                                            Xóa hội thoại
+                                        </button>
+                                    </div>
+
+                                    <div class="ai-quick-prompts" id="aiQuickPromptsBar">
+                                        <button type="button" class="period-pill-btn" data-ai-prompt="summary">Tình hình thu chi hiện tại?</button>
+                                        <button type="button" class="period-pill-btn" data-ai-prompt="habit">Nhận xét thói quen chi tiêu?</button>
+                                        <button type="button" class="period-pill-btn" data-ai-prompt="budget-advice">Gợi ý tiết kiệm theo ngân sách?</button>
+                                        <button type="button" class="period-pill-btn" data-ai-prompt="goal-eta">Bao lâu đạt mục tiêu tiết kiệm?</button>
+                                    </div>
+
+                                    <div id="aiChatHistoryBox" class="ai-chat-history" aria-live="polite"></div>
+
+                                    <form id="aiQuestionForm" style="display: flex; gap: var(--space-2);">
+                                        <input type="text"
+                                               id="aiQuestionInput"
+                                               class="form-control"
+                                               placeholder="Hỏi về số dư, chi tiêu lớn nhất, ngân sách, mục tiêu tiết kiệm..."
+                                               required />
+                                        <button type="submit" class="btn-primary" style="flex-shrink: 0;">
+                                            <i data-lucide="send" style="width: 16px; height: 16px;"></i>
+                                            <span>Hỏi</span>
+                                        </button>
+                                    </form>
+                                </article>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- 6. PROFILE PAGE -->
+                <section id="page-profile"
+                         class="page-view"
+                         data-page="profile"
+                         aria-labelledby="title-profile">
+                    <div class="page-header">
+                        <div>
+                            <h2 id="title-profile" class="page-header__title">Hồ sơ cá nhân</h2>
+                            <p class="page-header__desc">
+                                Quản lý thông tin sinh viên, trường học và tùy chỉnh định danh cá nhân trên ứng dụng.
+                            </p>
+                        </div>
+                    </div>
+
+                    <div id="profileMountSlot" class="profile-layout">
+                        <!-- Left Column: Live Student Card & Avatar Customization -->
+                        <aside class="surface-card profile-card-preview" aria-label="Thẻ sinh viên">
+                            <div id="profileAvatarPreview" class="profile-avatar-large">SV</div>
+                            <div>
+                                <h3 id="profileCardName" style="font-size: var(--fs-lg); font-weight: var(--fw-bold);">Sinh viên</h3>
+                                <p id="profileCardMajor" style="font-size: var(--fs-xs); color: var(--text-secondary);">Chưa cập nhật chuyên ngành</p>
+                            </div>
+
+                            <!-- Upload or Choose Preset Avatar -->
+                            <div style="width: 100%; display: flex; flex-direction: column; gap: var(--space-2);">
+                                <div style="display: flex; justify-content: center; gap: var(--space-2); flex-wrap: wrap;">
+                                    <label for="profileAvatarFileInput" class="btn-secondary" style="padding: 5px 12px; font-size: var(--fs-xs); cursor: pointer;">
+                                        <i data-lucide="upload" style="width: 14px; height: 14px;"></i>
+                                        <span>Tải ảnh lên</span>
+                                    </label>
+                                    <input type="file" id="profileAvatarFileInput" accept="image/*" class="is-hidden" />
+                                    <button type="button" id="profileRemoveAvatarBtn" class="btn-secondary" style="padding: 5px 12px; font-size: var(--fs-xs);">
+                                        <i data-lucide="rotate-ccw" style="width: 14px; height: 14px;"></i>
+                                        <span>Dùng chữ cái</span>
+                                    </button>
+                                </div>
+
+                                <div class="avatar-preset-list" id="profileAvatarColorList" aria-label="Chọn màu nền đại diện">
+                                    <button type="button" class="avatar-preset-btn is-active" data-avatar-bg="#2563eb" style="background-color: #2563eb; color: #fff;" title="Xanh lam">A</button>
+                                    <button type="button" class="avatar-preset-btn" data-avatar-bg="#16a34a" style="background-color: #16a34a; color: #fff;" title="Xanh lá">B</button>
+                                    <button type="button" class="avatar-preset-btn" data-avatar-bg="#d97706" style="background-color: #d97706; color: #fff;" title="Cam hổ phách">C</button>
+                                    <button type="button" class="avatar-preset-btn" data-avatar-bg="#9333ea" style="background-color: #9333ea; color: #fff;" title="Tím">D</button>
+                                    <button type="button" class="avatar-preset-btn" data-avatar-bg="#e11d48" style="background-color: #e11d48; color: #fff;" title="Đỏ hồng">E</button>
+                                </div>
+                            </div>
+
+                            <div class="profile-meta-list">
+                                <div class="profile-meta-row">
+                                    <span>Email:</span>
+                                    <strong id="profileCardEmail">Chưa cập nhật</strong>
+                                </div>
+                                <div class="profile-meta-row">
+                                    <span>Trường:</span>
+                                    <strong id="profileCardSchool">Chưa cập nhật</strong>
+                                </div>
+                                <div class="profile-meta-row">
+                                    <span>Lớp / Năm học:</span>
+                                    <strong id="profileCardClass">Chưa cập nhật</strong>
+                                </div>
+                            </div>
+                        </aside>
+
+                        <!-- Right Column: Profile Edit Form -->
+                        <div class="surface-card">
+                            <div class="surface-card__header">
+                                <h3 class="surface-card__title">
+                                    <i data-lucide="user-check" style="width: 18px; height: 18px;"></i>
+                                    <span>Thông tin hồ sơ sinh viên</span>
+                                </h3>
+                                <span class="phase-tag">Lưu trữ cục bộ trên thiết bị</span>
+                            </div>
+
+                            <form id="profileForm" novalidate>
+                                <div class="filter-bar__row" style="margin-bottom: var(--space-4);">
+                                    <div>
+                                        <label for="profNameInput" class="form-label">Họ và tên <span class="req">*</span></label>
+                                        <input type="text" id="profNameInput" class="form-control" placeholder="Ví dụ: Nguyễn Văn Vương" maxlength="80" required />
+                                    </div>
+                                    <div>
+                                        <label for="profEmailInput" class="form-label">Email sinh viên / cá nhân</label>
+                                        <input type="email" id="profEmailInput" class="form-control" placeholder="Ví dụ: vuong.sv@university.edu.vn" maxlength="100" />
+                                    </div>
+                                </div>
+
+                                <div class="filter-bar__row" style="margin-bottom: var(--space-4);">
+                                    <div>
+                                        <label for="profSchoolInput" class="form-label">Trường Đại học / Cao đẳng</label>
+                                        <input type="text" id="profSchoolInput" class="form-control" placeholder="Ví dụ: Đại học Công nghệ Thông tin" maxlength="120" />
+                                    </div>
+                                    <div>
+                                        <label for="profMajorInput" class="form-label">Chuyên ngành</label>
+                                        <input type="text" id="profMajorInput" class="form-control" placeholder="Ví dụ: Kỹ thuật Phần mềm / CNTT" maxlength="100" />
+                                    </div>
+                                </div>
+
+                                <div class="filter-bar__row" style="margin-bottom: var(--space-4);">
+                                    <div>
+                                        <label for="profClassYearInput" class="form-label">Lớp / Năm học</label>
+                                        <input type="text" id="profClassYearInput" class="form-control" placeholder="Ví dụ: K20 - Sinh viên Năm 2" maxlength="80" />
+                                    </div>
+                                    <div>
+                                        <label for="profBioInput" class="form-label">Mục tiêu tài chính cá nhân</label>
+                                        <input type="text" id="profBioInput" class="form-control" placeholder="Ví dụ: Tự chủ sinh hoạt phí & tiết kiệm mua Laptop" maxlength="150" />
+                                    </div>
+                                </div>
+
+                                <p style="font-size: var(--fs-xs); color: var(--text-muted); margin-bottom: var(--space-4);">
+                                    * Quyền riêng tư: Thông tin hồ sơ và ảnh đại diện chỉ lưu cục bộ trên trình duyệt của bạn, <strong>không nằm trong file sao lưu tài chính mặc định</strong> để bảo mật danh tính khi chia sẻ file.
+                                </p>
+
+                                <div id="profileFormError" class="form-error-msg is-hidden" role="alert"></div>
+
+                                <div class="form-actions" style="justify-content: flex-end;">
+                                    <button type="button" id="profResetBtn" class="btn-secondary">Khôi phục mặc định</button>
+                                    <button type="submit" class="btn-primary" style="flex: 0 1 auto; min-width: 180px;">
+                                        <i data-lucide="save" style="width: 16px; height: 16px;"></i>
+                                        <span>Lưu hồ sơ cá nhân</span>
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- 7. SETTINGS PAGE -->
+                <section id="page-settings"
+                         class="page-view"
+                         data-page="settings"
+                         aria-labelledby="title-settings">
+                    <div class="page-header">
+                        <div>
+                            <h2 id="title-settings" class="page-header__title">Cài đặt hệ thống</h2>
+                            <p class="page-header__desc">
+                                Tùy chỉnh giao diện hiển thị, định dạng ngày tháng, đơn vị tiền tệ và quản lý sao lưu – khôi phục dữ liệu tài chính.
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- Functional Theme Setting (Preserved from Phase 1-5) -->
+                    <div class="settings-panel">
+                        <div class="settings-panel__info">
+                            <h3>Chế độ giao diện (Theme Mode)</h3>
+                            <p>Chuyển đổi giữa giao diện Sáng (Light Mode) và Tối (Dark Mode). Tự động lưu vào trình duyệt.</p>
+                        </div>
+                        <div class="theme-switch-group" role="group" aria-label="Chọn chế độ giao diện">
+                            <button type="button"
+                                    id="btnThemeLight"
+                                    class="theme-option-btn"
+                                    data-theme-value="light">
+                                <i data-lucide="sun" style="width: 16px; height: 16px;"></i>
+                                <span>Light Mode</span>
+                            </button>
+                            <button type="button"
+                                    id="btnThemeDark"
+                                    class="theme-option-btn"
+                                    data-theme-value="dark">
+                                <i data-lucide="moon" style="width: 16px; height: 16px;"></i>
+                                <span>Dark Mode</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Demo Mode Management Panel (Isolated Database) -->
+                    <div class="settings-panel" id="demoModeSettingsPanel">
+                        <div class="settings-panel__info">
+                            <h3 style="display: flex; align-items: center; gap: var(--space-2); flex-wrap: wrap;">
+                                <span>Chế độ dùng thử (Demo Mode)</span>
+                                <span id="demoModeStatusBadge" class="phase-tag">Đang tắt (Dữ liệu thật)</span>
+                            </h3>
+                            <p>
+                                Trải nghiệm ứng dụng với bộ dữ liệu minh họa sinh viên. Dữ liệu Demo được lưu ở cơ sở dữ liệu độc lập (<code>StudentWalletDemoDB</code>), cách ly hoàn toàn và không ảnh hưởng tới dữ liệu thật.
+                            </p>
+                        </div>
+                        <div style="display: flex; align-items: center; gap: var(--space-2); flex-wrap: wrap;">
+                            <button type="button"
+                                    id="resetDemoDataBtn"
+                                    class="btn-secondary is-hidden"
+                                    title="Khôi phục dữ liệu Demo về trạng thái mẫu ban đầu">
+                                <i data-lucide="rotate-ccw" style="width: 16px; height: 16px;"></i>
+                                <span>Khôi phục dữ liệu Demo gốc</span>
+                            </button>
+                            <div class="theme-switch-group" role="group" aria-label="Bật hoặc tắt chế độ Demo">
+                                <button type="button"
+                                        id="btnDemoOff"
+                                        class="theme-option-btn is-selected"
+                                        data-demo-mode-value="off">
+                                    <i data-lucide="shield-check" style="width: 16px; height: 16px;"></i>
+                                    <span>Tắt Demo (Dữ liệu thật)</span>
+                                </button>
+                                <button type="button"
+                                        id="btnDemoOn"
+                                        class="theme-option-btn"
+                                        data-demo-mode-value="on">
+                                    <i data-lucide="flask-conical" style="width: 16px; height: 16px;"></i>
+                                    <span>Bật Demo</span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="settingsMountSlot" class="settings-grid-layout">
+                        <!-- Left Column: System Preferences -->
+                        <div class="surface-card">
+                            <div class="surface-card__header">
+                                <h3 class="surface-card__title">
+                                    <i data-lucide="sliders" style="width: 18px; height: 18px;"></i>
+                                    <span>Tùy chọn hiển thị & Định dạng</span>
+                                </h3>
+                            </div>
+
+                            <form id="settingsPreferencesForm">
+                                <div class="form-group">
+                                    <label class="form-label">Đơn vị tiền tệ cố định</label>
+                                    <input type="text" class="form-control" value="Việt Nam Đồng (VND - ₫)" readonly style="background-color: var(--bg-muted); font-weight: var(--fw-semibold); cursor: default;" />
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="setDateFormatSelect" class="form-label">Định dạng ngày hiển thị</label>
+                                    <select id="setDateFormatSelect" class="form-control">
+                                        <option value="DD/MM/YYYY">DD/MM/YYYY (Ví dụ: 31/10/2026 - Chuẩn Việt Nam)</option>
+                                        <option value="YYYY-MM-DD">YYYY-MM-DD (Ví dụ: 2026-10-31 - Chuẩn ISO)</option>
+                                        <option value="MM/DD/YYYY">MM/DD/YYYY (Ví dụ: 10/31/2026 - Quốc tế)</option>
+                                    </select>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="setDefaultRouteSelect" class="form-label">Trang mở đầu khi khởi động ứng dụng</label>
+                                    <select id="setDefaultRouteSelect" class="form-control">
+                                        <option value="dashboard">Tổng quan – Dashboard</option>
+                                        <option value="transactions">Thu chi – Transactions</option>
+                                        <option value="budget">Ngân sách – Budget</option>
+                                        <option value="analytics">Phân tích tài chính – Analytics</option>
+                                        <option value="savings-ai">Tiết kiệm & AI – Savings & AI</option>
+                                    </select>
+                                </div>
+
+                                <div class="form-group">
+                                    <label style="display: flex; align-items: center; gap: var(--space-2); font-size: var(--fs-sm); cursor: pointer;">
+                                        <input type="checkbox" id="setShowWelcomeCheckbox" checked />
+                                        <span>Hiển thị thẻ Chào mừng (Welcome Banner) trên trang Dashboard</span>
+                                    </label>
+                                </div>
+
+                                <button type="submit" class="btn-primary" style="width: 100%;">
+                                    <i data-lucide="check" style="width: 16px; height: 16px;"></i>
+                                    <span>Lưu thiết lập hệ thống</span>
+                                </button>
+                            </form>
+                        </div>
+
+                        <!-- Right Column: Backup & Restore Center -->
+                        <div class="surface-card">
+                            <div class="surface-card__header">
+                                <div>
+                                    <h3 class="surface-card__title">
+                                        <i data-lucide="database-backup" style="width: 18px; height: 18px;"></i>
+                                        <span>Sao lưu & Khôi phục dữ liệu tài chính (JSON)</span>
+                                    </h3>
+                                    <p style="font-size: var(--fs-xs); color: var(--text-muted); margin-top: 2px;">
+                                        Bao gồm: Giao dịch, Ngân sách, Mục tiêu tiết kiệm, Đóng góp tiết kiệm, Trợ cấp và Chi phí định kỳ. (Không chứa Hồ sơ & Avatar).
+                                    </p>
+                                </div>
+                            </div>
+
+                            <!-- Live Database Record Counts -->
+                            <div class="backup-stats-grid" aria-label="Thống kê bản ghi hiện tại">
+                                <div class="backup-stat-box">
+                                    <span id="bkStatTxCount" class="backup-stat-box__val">0</span>
+                                    <span class="backup-stat-box__label">Giao dịch thu/chi</span>
+                                </div>
+                                <div class="backup-stat-box">
+                                    <span id="bkStatBudgetCount" class="backup-stat-box__val">0</span>
+                                    <span class="backup-stat-box__label">Hạn mức ngân sách</span>
+                                </div>
+                                <div class="backup-stat-box">
+                                    <span id="bkStatSavingsCount" class="backup-stat-box__val">0</span>
+                                    <span class="backup-stat-box__label">Mục tiêu & Đóng góp</span>
+                                </div>
+                                <div class="backup-stat-box">
+                                    <span id="bkStatSchedulesCount" class="backup-stat-box__val">0</span>
+                                    <span class="backup-stat-box__label">Trợ cấp & Định kỳ</span>
+                                </div>
+                            </div>
+
+                            <!-- Export Section -->
+                            <div style="border-top: 1px solid var(--border-subtle); padding-top: var(--space-4); display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: var(--space-3);">
+                                <div>
+                                    <strong style="font-size: var(--fs-sm); color: var(--text-primary);">1. Xuất bản sao lưu (Export JSON)</strong>
+                                    <p style="font-size: var(--fs-xs); color: var(--text-secondary);">Tải toàn bộ dữ liệu tài chính hiện có về máy dưới dạng file <code>.json</code> an toàn.</p>
+                                </div>
+                                <button type="button" id="exportBackupJsonBtn" class="btn-primary">
+                                    <i data-lucide="download" style="width: 16px; height: 16px;"></i>
+                                    <span>Tải file sao lưu (.JSON)</span>
+                                </button>
+                            </div>
+
+                            <!-- Import & Restore Section -->
+                            <div style="border-top: 1px solid var(--border-subtle); padding-top: var(--space-4); display: flex; flex-direction: column; gap: var(--space-3);">
+                                <div>
+                                    <strong style="font-size: var(--fs-sm); color: var(--text-primary);">2. Nhập và khôi phục dữ liệu (Import & Restore)</strong>
+                                    <p style="font-size: var(--fs-xs); color: var(--text-secondary);">
+                                        Hệ thống kiểm tra cấu trúc JSON nghiêm ngặt trước khi nhập và đảm bảo không mất dữ liệu hiện tại nếu file lỗi.
+                                    </p>
+                                </div>
+
+                                <div class="filter-bar__row">
+                                    <div>
+                                        <label for="importBackupFileInput" class="form-label">Chọn file JSON sao lưu <span class="req">*</span></label>
+                                        <input type="file" id="importBackupFileInput" accept=".json,application/json" class="form-control" />
+                                    </div>
+                                    <div>
+                                        <label for="importBackupModeSelect" class="form-label">Chế độ khôi phục <span class="req">*</span></label>
+                                        <select id="importBackupModeSelect" class="form-control">
+                                            <option value="merge">Gộp dữ liệu (Merge – Giữ dữ liệu cũ, chống trùng bản ghi)</option>
+                                            <option value="overwrite">Ghi đè toàn bộ (Overwrite – Thay thế bằng bản sao lưu)</option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <!-- Raw JSON Copy/Paste for Mobile -->
+                                <div style="margin-top: var(--space-4); border-top: 1px dashed var(--border-subtle); padding-top: var(--space-4);">
+                                    <label for="rawJsonTextarea" class="form-label">Hoặc chép / dán chuỗi JSON trực tiếp (Tối ưu cho Mobile)</label>
+                                    <textarea id="rawJsonTextarea" class="form-control" rows="4" placeholder="Nhấn 'Tạo mã JSON' để chép, hoặc dán mã vào đây để khôi phục..." style="font-family: monospace; font-size: var(--fs-xs);"></textarea>
+
+                                    <div style="display: flex; gap: var(--space-2); margin-top: var(--space-3); flex-wrap: wrap; justify-content: flex-end;">
+                                        <button type="button" id="generateJsonTextBtn" class="btn-secondary" style="padding: 6px 12px; font-size: var(--fs-xs);">
+                                            <i data-lucide="copy" style="width: 14px; height: 14px;"></i>
+                                            <span>Tạo mã JSON & Copy</span>
+                                        </button>
+                                        <button type="button" id="restoreJsonTextBtn" class="btn-action" style="padding: 6px 12px; font-size: var(--fs-xs); background-color: var(--accent-soft); color: var(--accent-primary); font-weight: var(--fw-semibold);">
+                                            <i data-lucide="upload-cloud" style="width: 14px; height: 14px;"></i>
+                                            <span>Khôi phục từ khung chữ</span>
+                                        </button>
+                                    </div>
+                                </div>
+
+                                <div id="backupImportError" class="form-error-msg is-hidden" role="alert"></div>
+
+                                <div style="display: flex; justify-content: flex-end;">
+                                    <button type="button" id="importBackupJsonBtn" class="btn-action" style="background-color: var(--accent-soft); color: var(--accent-primary); font-weight: var(--fw-semibold);">
+                                        <i data-lucide="upload-cloud" style="width: 16px; height: 16px;"></i>
+                                        <span>Kiểm tra & Khôi phục dữ liệu</span>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- PATCH 2: Google Form Feedback Section -->
+                    <div class="settings-panel" style="margin-top: var(--space-6); margin-bottom: var(--space-6);">
+                        <div class="settings-panel__info">
+                            <h3>Góp ý và đánh giá</h3>
+                            <p>Ý kiến của bạn giúp Student Wallet ngày càng hoàn thiện hơn.</p>
+                        </div>
+                        <a href="https://docs.google.com/forms/d/e/1FAIpQLSfFLq6QySAFUUyLD0VIKHoPExjh7cBdwj5IIt8oo7Dzi6QRSw/viewform?usp=publish-editor"
+                           target="_blank"
+                           rel="noopener noreferrer"
+                           class="btn-primary">
+                            <i data-lucide="message-square-heart" style="width: 16px; height: 16px;"></i>
+                            <span>Gửi góp ý</span>
+                            <i data-lucide="external-link" style="width: 14px; height: 14px;"></i>
+                        </a>
+                    </div>
+
+                    <!-- PATCH 3: Creator / Credits Footer -->
+                    <footer style="margin-top: var(--space-4); padding: var(--space-5); border-top: 1px solid var(--border-subtle); text-align: center; display: flex; flex-direction: column; align-items: center; gap: 4px; color: var(--text-secondary);">
+                        <span style="font-size: var(--fs-xs); color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; font-weight: var(--fw-medium);">
+                            Designed &amp; Developed by
+                        </span>
+                        <strong style="font-size: var(--fs-base); font-weight: var(--fw-bold); color: var(--text-primary); letter-spacing: -0.01em;">
+                            Vuong06
+                        </strong>
+                        <span style="font-size: var(--fs-xs); color: var(--text-secondary); font-weight: var(--fw-medium);">
+                            Informatics Education Student
+                        </span>
+                        <span style="font-size: var(--fs-xs); color: var(--text-secondary);">
+                            TNUE – Thai Nguyen University of Education
+                        </span>
+                        <span style="font-size: 0.7rem; color: var(--text-muted); margin-top: var(--space-1);">
+                            &copy; 2026 Student Wallet
+                        </span>
+                    </footer>
+                </section>
+            </main>
+        </div>
+    </div>
+
+    <!-- ==================== DELETE CONFIRMATION MODAL ==================== -->
+    <div id="deleteConfirmModal" class="modal-backdrop" role="dialog" aria-modal="true" aria-labelledby="deleteModalTitle">
+        <div class="modal-dialog">
+            <div class="modal-dialog__header">
+                <div class="modal-dialog__icon">
+                    <i data-lucide="trash-2"></i>
+                </div>
+                <h3 id="deleteModalTitle" class="modal-dialog__title">Xác nhận xóa dữ liệu</h3>
+            </div>
+            <p id="deleteModalMessage" class="modal-dialog__body">
+                Bạn có chắc chắn muốn xóa mục này không? Hành động này không thể hoàn tác.
+            </p>
+            <div class="modal-dialog__footer">
+                <button type="button" id="cancelDeleteModalBtn" class="btn-secondary">Hủy bỏ</button>
+                <button type="button" id="confirmDeleteModalBtn" class="btn-danger">Xác nhận xóa</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ==================== TOAST NOTIFICATION CONTAINER ==================== -->
+    <div id="toastContainer" class="toast-container" aria-live="polite" aria-atomic="true"></div>
+
+    <!-- ==================== JAVASCRIPT ARCHITECTURE ==================== -->
+    <script src="js/app.js"></script>
+
+    <!-- Đăng ký Service Worker để chạy Offline -->
+    <script>
+        if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+        navigator.serviceWorker.register('./sw.js')
+        .then(reg => console.log('Đã đăng ký Service Worker', reg))
+        .catch(err => console.error('Lỗi đăng ký Service Worker', err));
+        });
+        }
+    </script>
+</body>
+</html>
