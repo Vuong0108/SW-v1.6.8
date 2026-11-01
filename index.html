@@ -1898,6 +1898,30 @@
         .catch(err => console.error('Lỗi đăng ký Service Worker', err));
         });
         }
+    <!-- Đăng ký Service Worker để chạy Offline -->
+    <script>
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                // Thêm updateViaCache: 'none' để trình duyệt luôn tải sw.js mới nhất từ server
+                navigator.serviceWorker.register('./sw.js', { updateViaCache: 'none' })
+                    .then(reg => {
+                        console.log('[App] Đã đăng ký Service Worker thành công');
+                        // Kích hoạt check update ngầm định mỗi khi load trang
+                        reg.update(); 
+                    })
+                    .catch(err => console.error('[App] Lỗi đăng ký Service Worker:', err));
+            });
+            
+            // Xử lý reload mượt mà nếu có thay đổi phiên bản SW lớn (phòng hờ)
+            let refreshing = false;
+            navigator.serviceWorker.addEventListener('controllerchange', () => {
+                if (!refreshing) {
+                    refreshing = true;
+                    // Không ép reload liên tục, controllerchange chỉ kích hoạt khi SW mới take over
+                    window.location.reload(); 
+                }
+            });
+        }
     </script>
 </body>
 </html>
