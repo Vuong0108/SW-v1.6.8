@@ -45,31 +45,46 @@ self.addEventListener('activate', (e) => {
 
 // 3. FETCH: Chiến lược Network-First (Ưu tiên mạng, dự phòng bằng cache)
 self.addEventListener('fetch', (e) => {
-  // Chỉ xử lý các request GET (không can thiệp POST, PUT... hoặc extension trình duyệt)
-  if (e.request.method !== 'GET' || !e.request.url.startsWith('http')) return;
+  const request = e.request;
+
+  // Chỉ xử lý GET và request cùng origin
+  if (
+    request.method !== 'GET' ||
+    new URL(request.url).origin !== self.location.origin
+  ) {
+    return;
+  }
 
   e.respondWith(
-    fetch(e.request)
+    fetch(request)
       .then((networkResponse) => {
-        // Nếu lấy được từ mạng, clone response và ném vào cache để cập nhật bản mới nhất
-        if (networkResponse && networkResponse.status === 200 && networkResponse.type === 'basic') {
+        if (
+          networkResponse &&
+          networkResponse.status === 200 &&
+          networkResponse.type === 'basic'
+        ) {
           const responseToCache = networkResponse.clone();
-          caches.open(CACHE_NAME).then((cache) => {
-            cache.put(e.request, responseToCache);
-          });
+
+          e.waitUntil(
+            caches.open(CACHE_NAME).then((cache) => {
+              return cache.put(request, responseToCache);
+            })
+          );
         }
+
         return networkResponse;
       })
       .catch(() => {
-        // Mất mạng -> Lấy từ Cache
-        return caches.match(e.request).then((cachedResponse) => {
+        return caches.match(request).then((cachedResponse) => {
           if (cachedResponse) {
             return cachedResponse;
           }
-          // Fallback cuối cùng: Trả về index.html nếu request là chuyển hướng trang
-          if (e.request.mode === 'navigate') {
+
+          if (request.mode === 'navigate') {
             return caches.match('./index.html');
           }
+
+          return Response.error();
         });
       })
   );
