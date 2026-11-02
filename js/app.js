@@ -6372,7 +6372,16 @@
         const year = now.getFullYear();
         const month = now.getMonth() + 1;
         const periodKey = DateTimeUtils.formatPeriodKey(year, month);
-        const padDay = (d) => `${periodKey}-${String(Math.min(d, 28)).padStart(2, '0')}`;
+        
+        // Lấy ngày hiện tại để làm mốc chặn
+        const todayDay = now.getDate();
+        
+        // Ép các ngày của dữ liệu Demo không được vượt quá ngày hôm nay,
+        // nhờ vậy giao dịch mới thêm vào (mặc định là hôm nay) sẽ luôn được đẩy lên top.
+        const padDay = (d) => {
+            const safeDay = Math.min(d, todayDay, 28);
+            return `${periodKey}-${String(safeDay).padStart(2, '0')}`;
+        };
         const nowISO = now.toISOString();
 
         return {
@@ -6583,19 +6592,12 @@
         const demoDb = await this.openDemoDatabase();
         if (!demoDb) return;
 
-        const existingTxCount = await new Promise((resolve) => {
-        try {
-        const tx = demoDb.transaction([Database.STORE_TRANSACTIONS], 'readonly');
-        const req = tx.objectStore(Database.STORE_TRANSACTIONS).count();
-        req.onsuccess = () => resolve(Number(req.result) || 0);
-        req.onerror = () => resolve(0);
-        } catch (e) {
-        resolve(0);
-        }
-        });
-
-        if (existingTxCount > 0 && !forceReset) {
-        return;
+        // CHỐT CHẶN: Dùng cờ (flag) để kiểm soát thay vì đếm số bản ghi.
+        // Giúp người dùng có thể xóa SẠCH dữ liệu demo mà không bị hệ thống tự động bơm lại.
+        const isSeeded = GeneralUtils.getStorage('student_wallet_demo_seeded_v1', false);
+        
+        if (isSeeded && !forceReset) {
+        return; // Nếu đã nạp data mẫu rồi thì dừng, bảo toàn mọi thao tác CRUD của user.
         }
 
         const sample = this.buildSampleDataset();
@@ -6612,12 +6614,19 @@
         try {
         const storeNames = availableStores.map(([name]) => name);
         const tx = demoDb.transaction(storeNames, 'readwrite');
+        
         availableStores.forEach(([storeName, records]) => {
         const store = tx.objectStore(storeName);
         store.clear();
         (records || []).forEach((rec) => store.put(rec));
         });
-        tx.oncomplete = () => resolve(true);
+        
+        tx.oncomplete = () => {
+        // Đánh dấu đã nạp data mẫu thành công để không bao giờ ghi đè nữa
+        GeneralUtils.setStorage('student_wallet_demo_seeded_v1', true);
+        resolve(true);
+        };
+        
         tx.onerror = () => reject(tx.error);
         } catch (err) {
         reject(err);
