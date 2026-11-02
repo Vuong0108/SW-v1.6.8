@@ -74,6 +74,65 @@
         return `${prefix}_${window.crypto.randomUUID()}`;
         }
         return `${prefix}_${Date.now()}_${Math.random().toString(36).substring(2, 9)}`;
+        },
+
+        initMoneyInputs() {
+        // 1. Chuyển đổi các ô nhập tiền tĩnh từ number sang text để cho phép hiển thị dấu chấm
+        const staticInputs = document.querySelectorAll('#txAmountInput, #budgetAmountInput, #sgTargetAmountInput, #alwAmountInput, #recAmountInput');
+        staticInputs.forEach(el => {
+        el.type = 'text';
+        el.setAttribute('inputmode', 'numeric');
+        el.classList.add('money-input');
+        if (el.placeholder) {
+        const rawMatch = el.placeholder.replace(/\D/g, '');
+        if (rawMatch) {
+        el.placeholder = el.placeholder.replace(rawMatch, new Intl.NumberFormat('vi-VN').format(rawMatch));
+        }
+        }
+        });
+
+        // 2. Ghi đè prototype value để các module khác gọi .value vẫn nhận được số nguyên gốc
+        const originalDescriptor = Object.getOwnPropertyDescriptor(window.HTMLInputElement.prototype, 'value');
+        Object.defineProperty(window.HTMLInputElement.prototype, 'value', {
+        get: function() {
+        const val = originalDescriptor.get.call(this);
+        if (this.classList.contains('money-input')) {
+        return val.replace(/\D/g, '');
+        }
+        return val;
+        },
+        set: function(val) {
+        if (this.classList.contains('money-input')) {
+        const raw = String(val).replace(/\D/g, '');
+        val = raw ? new Intl.NumberFormat('vi-VN').format(raw) : '';
+        }
+        originalDescriptor.set.call(this, val);
+        }
+        });
+
+        // 3. Xử lý sự kiện gõ phím để format real-time và giữ đúng vị trí con trỏ
+        document.addEventListener('input', (e) => {
+        const target = e.target;
+        if (target && target.classList.contains('money-input')) {
+        if (target.type !== 'text') {
+        target.type = 'text';
+        target.setAttribute('inputmode', 'numeric');
+        }
+        
+        let cursor = target.selectionStart;
+        const visualValue = originalDescriptor.get.call(target);
+        const oldLen = visualValue.length;
+        
+        const raw = visualValue.replace(/\D/g, '');
+        const formatted = raw ? new Intl.NumberFormat('vi-VN').format(raw) : '';
+        
+        originalDescriptor.set.call(target, formatted);
+        
+        const newLen = formatted.length;
+        cursor += (newLen - oldLen);
+        target.setSelectionRange(cursor, cursor);
+        }
+        });
         }
         };
 
@@ -82,13 +141,17 @@
         ======================================================================== */
         const DateTimeUtils = {
         formatCurrentDateVi(date = new Date()) {
-        const formatter = new Intl.DateTimeFormat('vi-VN', {
-        weekday: 'long',
-        day: '2-digit',
-        month: '2-digit',
-        year: 'numeric'
+        const weekdayFormatter = new Intl.DateTimeFormat('vi-VN', {
+        weekday: 'long'
         });
-        return formatter.format(date);
+        const weekday = weekdayFormatter.format(date);
+        const capitalizedWeekday = weekday.charAt(0).toUpperCase() + weekday.slice(1);
+        
+        // Lấy ngày đã format theo cài đặt hiện tại
+        const isoDate = this.formatLocalISODate(date);
+        const formattedDate = this.formatDisplayDateVi(isoDate);
+
+        return `${capitalizedWeekday}, ${formattedDate}`;
         },
 
         formatLocalISODate(date = new Date()) {
@@ -3712,7 +3775,7 @@
         <div class="filter-bar__row" style="margin-bottom: var(--space-2);">
         <div>
         <label class="form-label">Số tiền (VND) *</label>
-        <input type="number" name="amount" class="form-control" placeholder="Ví dụ: 500000" min="1" step="1" required />
+        <input type="text" inputmode="numeric" name="amount" class="form-control money-input" placeholder="Ví dụ: 500.000" required />
         </div>
         <div>
         <label class="form-label">Ngày thực hiện *</label>
@@ -4656,25 +4719,74 @@
         });
         }
 
-        if (resJsonBtn && jsonTextarea) {
-        resJsonBtn.addEventListener('click', async () => {
-        if (!jsonTextarea.value.trim()) {
-        NotificationManager.showToast('Vui lòng dán mã JSON vào ô trước khi khôi phục.', 'warning');
+        GeneralUtils.qs('#importBackupJsonBtn')?.addEventListener('click', () => {
+        const fileInput = GeneralUtils.qs('#importBackupFileInput');
+        const modeSelect = GeneralUtils.qs('#importBackupModeSelect');
+        const errEl = GeneralUtils.qs('#backupImportError');
+        if (errEl) errEl.classList.add('is-hidden');
+
+        const file = fileInput?.files && fileInput.files[0];
+        if (!file) {
+        if (errEl) {
+        errEl.textContent = 'Vui lòng chọn file .JSON sao lưu cần khôi phục.';
+        errEl.classList.remove('is-hidden');
+        }
         return;
         }
-        try {
-        const parsed = JSON.parse(jsonTextarea.value.trim());
-        const modeSelect = document.getElementById('importBackupModeSelect');
-        const clearFirst = modeSelect && modeSelect.value === 'overwrite';
 
-        await Database.importFinancialDataset(parsed, clearFirst);
-        NotificationManager.showToast('Khôi phục dữ liệu thành công! Ứng dụng sẽ tự động tải lại...', 'success');
-        setTimeout(() => location.reload(), 1500);
-        } catch (err) {
-        NotificationManager.showToast('Mã JSON không hợp lệ hoặc bị lỗi cấu trúc.', 'error');
+        const mode = modeSelect?.value === 'overwrite' ? 'overwrite' : 'merge';
+        const reader = new FileReader();
+
+        reader.onload = async (ev) => {
+        try {
+        const rawText = String(ev.target?.result || '');
+        let parsed;
+        try {
+        parsed = JSON.parse(rawText);
+        } catch (syntaxErr) {
+        throw new Error('File không đúng định dạng JSON chuẩn. Dữ liệu hiện tại của bạn vẫn an toàn.');
         }
+
+        const validatedDataset = this.validateBackupJsonObject(parsed);
+
+        if (mode === 'overwrite') {
+        NotificationManager.openConfirmModal(
+        'overwrite_backup',
+        'Bạn đang chọn chế độ GHI ĐÈ (Overwrite). Toàn bộ dữ liệu tài chính hiện tại sẽ được thay thế bằng dữ liệu trong file sao lưu. (Hồ sơ cá nhân & Avatar vẫn được giữ nguyên). Bạn có chắc chắn muốn tiếp tục?',
+        async () => {
+        try {
+        await this.executeImportDataset(validatedDataset, 'overwrite');
+        fileInput.value = '';
+        } catch (restoreErr) {
+        NotificationManager.showToast(
+        restoreErr.message || 'Khôi phục thất bại. Dữ liệu gốc được bảo toàn.',
+        'error'
+        );
+        }
+        },
+        'Xác nhận ghi đè dữ liệu sao lưu'
+        );
+        } else {
+        await this.executeImportDataset(validatedDataset, 'merge');
+        fileInput.value = '';
+        }
+        } catch (validationErr) {
+        if (errEl) {
+        errEl.textContent = validationErr.message || 'Dữ liệu file sao lưu không hợp lệ.';
+        errEl.classList.remove('is-hidden');
+        }
+        }
+        };
+
+        reader.onerror = () => {
+        if (errEl) {
+        errEl.textContent = 'Không thể đọc tệp đã chọn. Dữ liệu hiện tại của bạn vẫn an toàn.';
+        errEl.classList.remove('is-hidden');
+        }
+        };
+
+        reader.readAsText(file, 'utf-8');
         });
-        }
         /* --- KẾT THÚC LOGIC MỚI --- */
 
         }
@@ -5846,6 +5958,7 @@
         dateFormat: 'DD/MM/YYYY',
         defaultRoute: 'dashboard',
         showWelcomeBanner: true,
+        showMobileFab: true,
         currency: 'VND'
         },
 
@@ -5866,10 +5979,18 @@
         applySettingsToApp(reRenderViews = false) {
         const s = this.settings || this.DEFAULT_SETTINGS;
         DateTimeUtils.dateFormatPreference = s.dateFormat || 'DD/MM/YYYY';
+        
+        // Cập nhật ngay lại Header để áp dụng định dạng mới
+        DateTimeUtils.initHeaderDateAndGreeting();
 
         const welcomeCard = GeneralUtils.qs('#dashboardWelcomeCard');
         if (welcomeCard) {
         welcomeCard.classList.toggle('is-hidden', !s.showWelcomeBanner);
+        }
+
+        const mobileFabBtn = GeneralUtils.qs('#mobileFabBtn');
+        if (mobileFabBtn) {
+        mobileFabBtn.classList.toggle('is-hidden', !s.showMobileFab);
         }
 
         if (reRenderViews && FinancialUI.allTransactions) {
@@ -5888,10 +6009,12 @@
         const fmtSelect = GeneralUtils.qs('#setDateFormatSelect');
         const routeSelect = GeneralUtils.qs('#setDefaultRouteSelect');
         const welcomeChk = GeneralUtils.qs('#setShowWelcomeCheckbox');
+        const mobileFabChk = GeneralUtils.qs('#setShowMobileFabCheckbox');
 
         if (fmtSelect) fmtSelect.value = s.dateFormat || 'DD/MM/YYYY';
         if (routeSelect) routeSelect.value = s.defaultRoute || 'dashboard';
         if (welcomeChk) welcomeChk.checked = Boolean(s.showWelcomeBanner);
+        if (mobileFabChk) mobileFabChk.checked = Boolean(s.showMobileFab);
         },
 
         async refreshStatsDisplay() {
@@ -5918,7 +6041,123 @@
         console.warn('[SettingsBackupUI] Không thể tải thống kê:', err);
         }
         },
+        async exportDataToExcel() {
+            try {
+                if (typeof window.XLSX === 'undefined') {
+                    throw new Error('Thư viện Excel chưa được tải.');
+                }
+                
+                // Lấy dữ liệu thật (đảm bảo xuất dữ liệu thực tế kể cả khi đang ở Demo Mode)
+                const prevDb = Database.dbInstance;
+                if (Database.realDbInstance) {
+                    Database.dbInstance = Database.realDbInstance;
+                }
+                
+                const [
+                    transactions, budgets, savingsGoals, savingsContributions, allowances, recurringExpenses
+                ] = await Promise.all([
+                    Database.getAllTransactions(), Database.getAllBudgets(), Database.getAllSavingsGoals(),
+                    Database.getAllSavingsContributions(), Database.getAllAllowances(), Database.getAllRecurringExpenses()
+                ]);
+                
+                Database.dbInstance = prevDb; // Phục hồi DB hiện tại
 
+                const wb = XLSX.utils.book_new();
+
+                // 1. Tổng quan
+                const summary = TransactionService.calculateSummary(transactions);
+                const overviewData = [
+                    ['Chỉ số', 'Giá trị'],
+                    ['Tổng thu nhập', summary.totalIncome],
+                    ['Tổng chi tiêu', summary.totalExpense],
+                    ['Tổng chuyển khoản', summary.totalTransfer],
+                    ['Số dư ròng (Thu - Chi)', summary.balance],
+                    ['Số lượng giao dịch Thu', summary.incomeCount],
+                    ['Số lượng giao dịch Chi', summary.expenseCount]
+                ];
+                const wsOverview = XLSX.utils.aoa_to_sheet(overviewData);
+                XLSX.utils.book_append_sheet(wb, wsOverview, "Tổng quan");
+
+                // 2. Thu chi
+                const txData = transactions.map(t => ({
+                    'Mã giao dịch': t.id,
+                    'Ngày': t.date,
+                    'Loại': t.type === 'income' ? 'Thu nhập' : t.type === 'expense' ? 'Chi tiêu' : 'Chuyển khoản',
+                    'Danh mục': t.category,
+                    'Số tiền (VND)': t.amount,
+                    'Ghi chú': t.note || '',
+                    'Ngày tạo': t.createdAt
+                }));
+                const wsTx = XLSX.utils.json_to_sheet(txData);
+                XLSX.utils.book_append_sheet(wb, wsTx, "Thu chi");
+
+                // 3. Ngân sách
+                const bgData = budgets.map(b => ({
+                    'Kỳ ngân sách': b.periodKey,
+                    'Loại': b.scope === 'overall' ? 'Ngân sách tổng' : 'Theo danh mục',
+                    'Danh mục': b.category,
+                    'Hạn mức (VND)': b.amount,
+                    'Ghi chú': b.note || ''
+                }));
+                const wsBg = XLSX.utils.json_to_sheet(bgData);
+                XLSX.utils.book_append_sheet(wb, wsBg, "Ngân sách");
+
+                // 4. Mục tiêu tiết kiệm
+                const sgData = savingsGoals.map(g => ({
+                    'Tên mục tiêu': g.name,
+                    'Mục tiêu (VND)': g.targetAmount,
+                    'Hiện có (VND)': g.currentAmount,
+                    'Ngày bắt đầu': g.startDate,
+                    'Hạn hoàn thành': g.targetDate,
+                    'Trạng thái': g.status === 'completed' ? 'Hoàn thành' : 'Đang thực hiện'
+                }));
+                const wsSg = XLSX.utils.json_to_sheet(sgData);
+                XLSX.utils.book_append_sheet(wb, wsSg, "Mục tiêu tiết kiệm");
+
+                // 5. Đóng góp tiết kiệm
+                const scData = savingsContributions.map(c => ({
+                    'Mã mục tiêu': c.goalId,
+                    'Loại': c.type === 'deposit' ? 'Nạp tiền' : 'Rút tiền',
+                    'Số tiền (VND)': c.amount,
+                    'Ngày': c.date,
+                    'Ghi chú': c.note || ''
+                }));
+                const wsSc = XLSX.utils.json_to_sheet(scData);
+                XLSX.utils.book_append_sheet(wb, wsSc, "Đóng góp tiết kiệm");
+
+                // 6. Trợ cấp
+                const alwData = allowances.map(a => ({
+                    'Tên khoản': a.name,
+                    'Số tiền (VND)': a.amount,
+                    'Chu kỳ': a.frequency === 'monthly' ? 'Hàng tháng' : a.frequency === 'weekly' ? 'Hàng tuần' : 'Một lần',
+                    'Danh mục': a.category,
+                    'Ngày bắt đầu': a.startDate,
+                    'Ghi chú': a.note || ''
+                }));
+                const wsAlw = XLSX.utils.json_to_sheet(alwData);
+                XLSX.utils.book_append_sheet(wb, wsAlw, "Trợ cấp");
+
+                // 7. Chi phí định kỳ
+                const recData = recurringExpenses.map(r => ({
+                    'Tên chi phí': r.name,
+                    'Số tiền (VND)': r.amount,
+                    'Chu kỳ': r.frequency === 'monthly' ? 'Hàng tháng' : r.frequency === 'weekly' ? 'Hàng tuần' : 'Một lần',
+                    'Danh mục': r.category,
+                    'Hạn thanh toán': r.startDate,
+                    'Ghi chú': r.note || ''
+                }));
+                const wsRec = XLSX.utils.json_to_sheet(recData);
+                XLSX.utils.book_append_sheet(wb, wsRec, "Chi phí định kỳ");
+
+                const dateStamp = DateTimeUtils.formatLocalISODate(new Date());
+                XLSX.writeFile(wb, `StudentWallet_Backup_${dateStamp}.xlsx`);
+                
+                NotificationManager.showToast('Đã xuất file Excel thành công!', 'success');
+            } catch (err) {
+                console.error('[Excel Export Error]', err);
+                NotificationManager.showToast('Không thể xuất Excel: ' + err.message, 'error');
+            }
+        },
         async exportFinancialDataAsJson() {
         const prevDb = Database.dbInstance;
         try {
@@ -6221,6 +6460,7 @@
         dateFormat: GeneralUtils.qs('#setDateFormatSelect')?.value || 'DD/MM/YYYY',
         defaultRoute: GeneralUtils.qs('#setDefaultRouteSelect')?.value || 'dashboard',
         showWelcomeBanner: Boolean(GeneralUtils.qs('#setShowWelcomeCheckbox')?.checked),
+        showMobileFab: Boolean(GeneralUtils.qs('#setShowMobileFabCheckbox')?.checked),
         currency: 'VND'
         };
         GeneralUtils.setStorage(GeneralUtils.STORAGE_KEYS.SETTINGS, this.settings);
@@ -6233,32 +6473,28 @@
         this.exportFinancialDataAsJson();
         });
 
-        GeneralUtils.qs('#importBackupJsonBtn')?.addEventListener('click', () => {
+        GeneralUtils.qs('#exportExcelBtn')?.addEventListener('click', () => {
+        this.exportDataToExcel();
+        });
+
+        GeneralUtils.qs('#unifiedRestoreBtn')?.addEventListener('click', () => {
         const fileInput = GeneralUtils.qs('#importBackupFileInput');
+        const textArea = GeneralUtils.qs('#rawJsonTextarea');
         const modeSelect = GeneralUtils.qs('#importBackupModeSelect');
         const errEl = GeneralUtils.qs('#backupImportError');
         if (errEl) errEl.classList.add('is-hidden');
 
-        const file = fileInput?.files && fileInput.files[0];
-        if (!file) {
-        if (errEl) {
-        errEl.textContent = 'Vui lòng chọn file .JSON sao lưu cần khôi phục.';
-        errEl.classList.remove('is-hidden');
-        }
-        return;
-        }
-
         const mode = modeSelect?.value === 'overwrite' ? 'overwrite' : 'merge';
-        const reader = new FileReader();
+        const rawText = textArea?.value.trim();
+        const file = fileInput?.files && fileInput.files[0];
 
-        reader.onload = async (ev) => {
+        const processRestoreData = async (jsonString) => {
         try {
-        const rawText = String(ev.target?.result || '');
         let parsed;
         try {
-        parsed = JSON.parse(rawText);
+        parsed = JSON.parse(jsonString);
         } catch (syntaxErr) {
-        throw new Error('File không đúng định dạng JSON chuẩn. Dữ liệu hiện tại của bạn vẫn an toàn.');
+        throw new Error('Không đúng định dạng JSON chuẩn. Dữ liệu hiện tại của bạn vẫn an toàn.');
         }
 
         const validatedDataset = this.validateBackupJsonObject(parsed);
@@ -6266,11 +6502,12 @@
         if (mode === 'overwrite') {
         NotificationManager.openConfirmModal(
         'overwrite_backup',
-        'Bạn đang chọn chế độ GHI ĐÈ (Overwrite). Toàn bộ dữ liệu tài chính hiện tại sẽ được thay thế bằng dữ liệu trong file sao lưu. (Hồ sơ cá nhân & Avatar vẫn được giữ nguyên). Bạn có chắc chắn muốn tiếp tục?',
+        'Bạn đang chọn chế độ GHI ĐÈ (Overwrite). Toàn bộ dữ liệu tài chính hiện tại sẽ được thay thế bằng dữ liệu sao lưu. Bạn có chắc chắn muốn tiếp tục?',
         async () => {
         try {
         await this.executeImportDataset(validatedDataset, 'overwrite');
-        fileInput.value = '';
+        if (fileInput) fileInput.value = '';
+        if (textArea) textArea.value = '';
         } catch (restoreErr) {
         NotificationManager.showToast(
         restoreErr.message || 'Khôi phục thất bại. Dữ liệu gốc được bảo toàn.',
@@ -6282,24 +6519,40 @@
         );
         } else {
         await this.executeImportDataset(validatedDataset, 'merge');
-        fileInput.value = '';
+        if (fileInput) fileInput.value = '';
+        if (textArea) textArea.value = '';
         }
         } catch (validationErr) {
         if (errEl) {
-        errEl.textContent = validationErr.message || 'Dữ liệu file sao lưu không hợp lệ.';
+        errEl.textContent = validationErr.message || 'Dữ liệu sao lưu không hợp lệ.';
         errEl.classList.remove('is-hidden');
         }
         }
         };
 
+        // Ưu tiên 1: Lấy từ Khung chữ nếu có
+        if (rawText) {
+        processRestoreData(rawText);
+        } 
+        // Ưu tiên 2: Nếu Khung chữ trống, đọc từ File
+        else if (file) {
+        const reader = new FileReader();
+        reader.onload = (ev) => processRestoreData(String(ev.target?.result || ''));
         reader.onerror = () => {
         if (errEl) {
         errEl.textContent = 'Không thể đọc tệp đã chọn. Dữ liệu hiện tại của bạn vẫn an toàn.';
         errEl.classList.remove('is-hidden');
         }
         };
-
         reader.readAsText(file, 'utf-8');
+        } 
+        // Báo lỗi nếu cả hai đều trống
+        else {
+        if (errEl) {
+        errEl.textContent = 'Vui lòng chọn file .JSON hoặc dán mã JSON vào khung chữ để khôi phục.';
+        errEl.classList.remove('is-hidden');
+        }
+        }
         });
         }
         };
@@ -6741,11 +6994,12 @@
         }
         };
 
-        /* ========================================================================
+       /* ========================================================================
         INITIALIZE APPLICATION
         ======================================================================== */
         async function initApp() {
         GeneralUtils.refreshIcons();
+        GeneralUtils.initMoneyInputs();
         DateTimeUtils.initHeaderDateAndGreeting();
         ThemeManager.init();
         UIState.init();
