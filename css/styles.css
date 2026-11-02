@@ -2544,6 +2544,9 @@ textarea.form-control {
 /* ==========================================================================
         9. RESPONSIVE DESIGN
         ========================================================================== */
+.mobile-only-setting {
+    display: none !important;
+}
 @media (max-width: 1024px) {
     .content-area {
         padding: var(--space-5);
@@ -2629,6 +2632,10 @@ textarea.form-control {
 @media (max-width: 767px) {
     .bottom-nav, .mobile-fab {
         display: flex;
+    }
+
+    .mobile-only-setting {
+        display: flex !important;
     }
 
     .sidebar, .mobile-menu-btn, .sidebar-backdrop {
@@ -2889,17 +2896,17 @@ textarea.form-control {
 
     /* --- KẾT THÚC BẢN VÁ FIX LỖI RESPONSIVE (ULTIMATE) --- */
 
-        /* ==========================================================================
+    /* ==========================================================================
         10. ANIMATIONS
         ========================================================================== */
-@keyframes fadeSlideIn {
-    from {
-        opacity: 0;
-        transform: translateY(6px);
-    }
+    @keyframes fadeSlideIn {
+        from {
+            opacity: 0;
+            transform: translateY(6px);
+        }
 
-    to {
-        opacity: 1;
-        transform: translateY(0);
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
     }
-}
