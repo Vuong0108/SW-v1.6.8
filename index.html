@@ -110,7 +110,7 @@
 
                 <div class="app-version" title="Phiên bản Phase 6 – Complete Implementation">
                     <span class="app-version__label">Phiên bản</span>
-                    <span class="app-version__badge">v1.62</span>
+                    <span class="app-version__badge">v1.61</span>
                 </div>
             </div>
         </aside>
@@ -119,24 +119,24 @@
         <!-- ==================== MOBILE BOTTOM NAV & FAB ==================== -->
         <nav class="bottom-nav" aria-label="Điều hướng di động">
             <button type="button" class="bottom-nav-item is-active" data-bottom-route="dashboard">
-                <i data-lucide="layout-dashboard" style="width: 22px; height: 22px;"></i>
+                <i data-lucide="layout-dashboard" style="width: 20px; height: 20px;"></i>
                 <span>Tổng quan</span>
             </button>
             <button type="button" class="bottom-nav-item" data-bottom-route="transactions">
-                <i data-lucide="arrow-left-right" style="width: 22px; height: 22px;"></i>
+                <i data-lucide="arrow-left-right" style="width: 20px; height: 20px;"></i>
                 <span>Thu chi</span>
             </button>
-            <button type="button" class="bottom-nav-item" data-bottom-route="budget">
-                <i data-lucide="pie-chart" style="width: 22px; height: 22px;"></i>
-                <span>Ngân sách</span>
-            </button>
             <button type="button" class="bottom-nav-item" data-bottom-route="savings-ai">
-                <i data-lucide="piggy-bank" style="width: 22px; height: 22px;"></i>
+                <i data-lucide="piggy-bank" style="width: 20px; height: 20px;"></i>
                 <span>Tiết kiệm</span>
             </button>
-            <button type="button" class="bottom-nav-item" data-bottom-route="settings">
-                <i data-lucide="settings" style="width: 22px; height: 22px;"></i>
-                <span>Cài đặt</span>
+            <button type="button" class="bottom-nav-item" data-bottom-route="analytics">
+                <i data-lucide="bar-chart-3" style="width: 20px; height: 20px;"></i>
+                <span>Phân tích</span>
+            </button>
+            <button type="button" class="bottom-nav-item" data-bottom-route="budget">
+                <i data-lucide="pie-chart" style="width: 20px; height: 20px;"></i>
+                <span>Ngân sách</span>
             </button>
         </nav>
 
@@ -163,6 +163,15 @@
                         <i data-lucide="calendar" style="width: 16px; height: 16px;"></i>
                         <time id="currentDateDisplay">--/--/----</time>
                     </div>
+
+                    <!-- Nút Settings chỉ hiển thị trên Mobile -->
+                    <button id="headerSettingsBtnMobile"
+                            class="user-avatar-btn mobile-header-settings"
+                            type="button"
+                            data-route="settings"
+                            title="Đi tới Cài đặt">
+                        <i data-lucide="settings" style="width: 20px; height: 20px; color: var(--text-secondary);"></i>
+                    </button>
 
                     <button id="headerProfileBtn"
                             class="user-avatar-btn"
@@ -1898,29 +1907,29 @@
         .catch(err => console.error('Lỗi đăng ký Service Worker', err));
         });
         }
-    <!-- Đăng ký Service Worker để chạy Offline -->
-    <script>
+        <!-- Đăng ký Service Worker để chạy Offline -->
+        <script>
         if ('serviceWorker' in navigator) {
-            window.addEventListener('load', () => {
-                // Thêm updateViaCache: 'none' để trình duyệt luôn tải sw.js mới nhất từ server
-                navigator.serviceWorker.register('./sw.js', { updateViaCache: 'none' })
-                    .then(reg => {
-                        console.log('[App] Đã đăng ký Service Worker thành công');
-                        // Kích hoạt check update ngầm định mỗi khi load trang
-                        reg.update(); 
-                    })
-                    .catch(err => console.error('[App] Lỗi đăng ký Service Worker:', err));
-            });
-            
-            // Xử lý reload mượt mà nếu có thay đổi phiên bản SW lớn (phòng hờ)
-            let refreshing = false;
-            navigator.serviceWorker.addEventListener('controllerchange', () => {
-                if (!refreshing) {
-                    refreshing = true;
-                    // Không ép reload liên tục, controllerchange chỉ kích hoạt khi SW mới take over
-                    window.location.reload(); 
-                }
-            });
+        window.addEventListener('load', () => {
+        // Thêm updateViaCache: 'none' để trình duyệt luôn tải sw.js mới nhất từ server
+        navigator.serviceWorker.register('./sw.js', { updateViaCache: 'none' })
+        .then(reg => {
+        console.log('[App] Đã đăng ký Service Worker thành công');
+        // Kích hoạt check update ngầm định mỗi khi load trang
+        reg.update();
+        })
+        .catch(err => console.error('[App] Lỗi đăng ký Service Worker:', err));
+        });
+
+        // Xử lý reload mượt mà nếu có thay đổi phiên bản SW lớn (phòng hờ)
+        let refreshing = false;
+        navigator.serviceWorker.addEventListener('controllerchange', () => {
+        if (!refreshing) {
+        refreshing = true;
+        // Không ép reload liên tục, controllerchange chỉ kích hoạt khi SW mới take over
+        window.location.reload();
+        }
+        });
         }
     </script>
 </body>
