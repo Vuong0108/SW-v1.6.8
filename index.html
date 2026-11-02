@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+ <!DOCTYPE html>
 <html lang="vi" data-theme="light">
 <head>
     <meta charset="UTF-8" />
@@ -12,6 +12,9 @@
     <!-- Lucide Icons CDN -->
     <!-- Thay vì gọi qua CDN unpkg.com -->
     <script src="./lucide.min.js"></script>
+
+    <!-- SheetJS cho xuất Excel -->
+    <script src="https://cdn.sheetjs.com/xlsx-0.20.1/package/dist/xlsx.full.min.js"></script>
 
     <link rel="stylesheet" href="css/styles.css?v=2.0">
 
@@ -110,7 +113,7 @@
 
                 <div class="app-version" title="Phiên bản Phase 6 – Complete Implementation">
                     <span class="app-version__label">Phiên bản</span>
-                    <span class="app-version__badge">v1.61</span>
+                    <span class="app-version__badge">v1.6.8</span>
                 </div>
             </div>
         </aside>
@@ -1730,6 +1733,13 @@
                                     </label>
                                 </div>
 
+                                <div class="form-group mobile-only-setting">
+                                    <label style="display: flex; align-items: center; gap: var(--space-2); font-size: var(--fs-sm); cursor: pointer;">
+                                        <input type="checkbox" id="setShowMobileFabCheckbox" checked />
+                                        <span>Hiển thị nút thêm giao dịch nhanh (+) góc dưới màn hình</span>
+                                    </label>
+                                </div>
+
                                 <button type="submit" class="btn-primary" style="width: 100%;">
                                     <i data-lucide="check" style="width: 16px; height: 16px;"></i>
                                     <span>Lưu thiết lập hệ thống</span>
@@ -1773,14 +1783,17 @@
 
                             <!-- Export Section -->
                             <div style="border-top: 1px solid var(--border-subtle); padding-top: var(--space-4); display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: var(--space-3);">
-                                <div>
-                                    <strong style="font-size: var(--fs-sm); color: var(--text-primary);">1. Xuất bản sao lưu (Export JSON)</strong>
-                                    <p style="font-size: var(--fs-xs); color: var(--text-secondary);">Tải toàn bộ dữ liệu tài chính hiện có về máy dưới dạng file <code>.json</code> an toàn.</p>
+                                <strong style="font-size: var(--fs-sm); color: var(--text-primary);">1. Xuất bản sao lưu (JSON) & Excel</strong>
+                                <div style="display: flex; gap: var(--space-2); flex-wrap: wrap;">
+                                    <button type="button" id="exportBackupJsonBtn" class="btn-primary">
+                                        <i data-lucide="download" style="width: 16px; height: 16px;"></i>
+                                        <span>Tải file sao lưu (.JSON)</span>
+                                    </button>
+                                    <button type="button" id="exportExcelBtn" class="btn-primary" style="background-color: var(--color-success); border-color: var(--color-success);">
+                                        <i data-lucide="file-spreadsheet" style="width: 16px; height: 16px;"></i>
+                                        <span>Xuất ra Excel (.XLSX)</span>
+                                    </button>
                                 </div>
-                                <button type="button" id="exportBackupJsonBtn" class="btn-primary">
-                                    <i data-lucide="download" style="width: 16px; height: 16px;"></i>
-                                    <span>Tải file sao lưu (.JSON)</span>
-                                </button>
                             </div>
 
                             <!-- Import & Restore Section -->
@@ -1788,7 +1801,7 @@
                                 <div>
                                     <strong style="font-size: var(--fs-sm); color: var(--text-primary);">2. Nhập và khôi phục dữ liệu (Import & Restore)</strong>
                                     <p style="font-size: var(--fs-xs); color: var(--text-secondary);">
-                                        Hệ thống kiểm tra cấu trúc JSON nghiêm ngặt trước khi nhập và đảm bảo không mất dữ liệu hiện tại nếu file lỗi.
+                                        Hệ thống kiểm tra cấu trúc JSON nghiêm ngặt trước khi nhập. Ưu tiên khôi phục từ khung chữ nếu có dữ liệu.
                                     </p>
                                 </div>
 
@@ -1816,59 +1829,54 @@
                                             <i data-lucide="copy" style="width: 14px; height: 14px;"></i>
                                             <span>Tạo mã JSON & Copy</span>
                                         </button>
-                                        <button type="button" id="restoreJsonTextBtn" class="btn-action" style="padding: 6px 12px; font-size: var(--fs-xs); background-color: var(--accent-soft); color: var(--accent-primary); font-weight: var(--fw-semibold);">
-                                            <i data-lucide="upload-cloud" style="width: 14px; height: 14px;"></i>
-                                            <span>Khôi phục từ khung chữ</span>
-                                        </button>
                                     </div>
                                 </div>
 
                                 <div id="backupImportError" class="form-error-msg is-hidden" role="alert"></div>
 
                                 <div style="display: flex; justify-content: flex-end;">
-                                    <button type="button" id="importBackupJsonBtn" class="btn-action" style="background-color: var(--accent-soft); color: var(--accent-primary); font-weight: var(--fw-semibold);">
+                                    <button type="button" id="unifiedRestoreBtn" class="btn-action" style="background-color: var(--accent-primary); color: var(--text-on-accent); font-weight: var(--fw-semibold);">
                                         <i data-lucide="upload-cloud" style="width: 16px; height: 16px;"></i>
-                                        <span>Kiểm tra & Khôi phục dữ liệu</span>
+                                        <span>Thực hiện Khôi phục dữ liệu</span>
                                     </button>
                                 </div>
                             </div>
-                        </div>
-                    </div>
-                    <!-- PATCH 2: Google Form Feedback Section -->
-                    <div class="settings-panel" style="margin-top: var(--space-6); margin-bottom: var(--space-6);">
-                        <div class="settings-panel__info">
-                            <h3>Góp ý và đánh giá</h3>
-                            <p>Ý kiến của bạn giúp Student Wallet ngày càng hoàn thiện hơn.</p>
-                        </div>
-                        <a href="https://docs.google.com/forms/d/e/1FAIpQLSfFLq6QySAFUUyLD0VIKHoPExjh7cBdwj5IIt8oo7Dzi6QRSw/viewform?usp=publish-editor"
-                           target="_blank"
-                           rel="noopener noreferrer"
-                           class="btn-primary">
-                            <i data-lucide="message-square-heart" style="width: 16px; height: 16px;"></i>
-                            <span>Gửi góp ý</span>
-                            <i data-lucide="external-link" style="width: 14px; height: 14px;"></i>
-                        </a>
-                    </div>
 
-                    <!-- PATCH 3: Creator / Credits Footer -->
-                    <footer style="margin-top: var(--space-4); padding: var(--space-5); border-top: 1px solid var(--border-subtle); text-align: center; display: flex; flex-direction: column; align-items: center; gap: 4px; color: var(--text-secondary);">
-                        <span style="font-size: var(--fs-xs); color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; font-weight: var(--fw-medium);">
-                            Designed &amp; Developed by
-                        </span>
-                        <strong style="font-size: var(--fs-base); font-weight: var(--fw-bold); color: var(--text-primary); letter-spacing: -0.01em;">
-                            Vuong06
-                        </strong>
-                        <span style="font-size: var(--fs-xs); color: var(--text-secondary); font-weight: var(--fw-medium);">
-                            Informatics Education Student
-                        </span>
-                        <span style="font-size: var(--fs-xs); color: var(--text-secondary);">
-                            TNUE – Thai Nguyen University of Education
-                        </span>
-                        <span style="font-size: 0.7rem; color: var(--text-muted); margin-top: var(--space-1);">
-                            &copy; 2026 Student Wallet
-                        </span>
-                    </footer>
-                </section>
+                            <!-- PATCH 2: Google Form Feedback Section -->
+                            <div class="settings-panel" style="margin-top: var(--space-6); margin-bottom: var(--space-6);">
+                                <div class="settings-panel__info">
+                                    <h3>Góp ý và đánh giá</h3>
+                                    <p>Ý kiến của bạn giúp Student Wallet ngày càng hoàn thiện hơn.</p>
+                                </div>
+                                <a href="https://docs.google.com/forms/d/e/1FAIpQLSfFLq6QySAFUUyLD0VIKHoPExjh7cBdwj5IIt8oo7Dzi6QRSw/viewform?usp=publish-editor"
+                                   target="_blank"
+                                   rel="noopener noreferrer"
+                                   class="btn-primary">
+                                    <i data-lucide="message-square-heart" style="width: 16px; height: 16px;"></i>
+                                    <span>Gửi góp ý</span>
+                                    <i data-lucide="external-link" style="width: 14px; height: 14px;"></i>
+                                </a>
+                            </div>
+
+                            <!-- PATCH 3: Creator / Credits Footer -->
+                            <footer style="margin-top: var(--space-4); padding: var(--space-5); border-top: 1px solid var(--border-subtle); text-align: center; display: flex; flex-direction: column; align-items: center; gap: 4px; color: var(--text-secondary);">
+                                <span style="font-size: var(--fs-xs); color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; font-weight: var(--fw-medium);">
+                                    Designed &amp; Developed by
+                                </span>
+                                <strong style="font-size: var(--fs-base); font-weight: var(--fw-bold); color: var(--text-primary); letter-spacing: -0.01em;">
+                                    Vuong06
+                                </strong>
+                                <span style="font-size: var(--fs-xs); color: var(--text-secondary); font-weight: var(--fw-medium);">
+                                    Informatics Education Student
+                                </span>
+                                <span style="font-size: var(--fs-xs); color: var(--text-secondary);">
+                                    TNUE – Thai Nguyen University of Education
+                                </span>
+                                <span style="font-size: 0.7rem; color: var(--text-muted); margin-top: var(--space-1);">
+                                    &copy; 2026 Student Wallet
+                                </span>
+                            </footer>
+</section>
             </main>
         </div>
     </div>
