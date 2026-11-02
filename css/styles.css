@@ -505,15 +505,21 @@ a {
 }
 
 .header__right {
-    /* Ẩn nút Settings trên Top Header đối với màn hình Desktop */
-    .mobile-header-settings {
-        display: none;
-        padding: var(--space-2);
-        border-radius: var(--radius-md);
-    }
     display: flex;
     align-items: center;
     gap: var(--space-4);
+}
+/* Khung nút Settings chuẩn (Mặc định ẩn trên Desktop) */
+.mobile-header-settings {
+    display: none;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    border-radius: var(--radius-md);
+    color: var(--text-secondary);
+    border: 1px solid var(--border-subtle);
+    background-color: var(--bg-surface);
 }
 
 .header__date {
@@ -2740,64 +2746,47 @@ textarea.form-control {
     .type-segmented--four {
         grid-template-columns: repeat(2, 1fr);
     }
-    /* --- TASK 3: Hiển thị Settings Header trên Mobile --- */
+    /* --- BẮT ĐẦU BẢN VÁ FIX LỖI --- */
+
+    /* 1. Ép nút Settings hiện lên trên Mobile một cách chắc chắn */
     .mobile-header-settings {
+        display: flex !important;
+    }
+
+    .header__right {
+        gap: var(--space-2);
+    }
+
+    /* 2. Fix tràn các Tab "Thu chi | Trợ cấp | Định kỳ" -> Xếp dọc xuống dòng */
+    .tx-workspace-tabs .type-segmented {
         display: flex;
+        flex-direction: column;
+        width: 100%;
+        gap: var(--space-2);
     }
 
-    /* --- TASK 4: Ép 5 mục Bottom Nav hiển thị đẹp --- */
-    .bottom-nav {
-        justify-content: space-evenly;
-        padding: var(--space-2) 0 calc(var(--space-2) + env(safe-area-inset-bottom, 0px));
+    .tx-workspace-tabs .type-seg-btn {
+        white-space: normal;
+        width: 100%;
+        padding: var(--space-3);
     }
 
-    .bottom-nav-item {
-        font-size: 0.625rem; /* ~10px để nhét vừa 5 chữ */
-        padding: var(--space-1);
+    /* 3. Fix cụm chữ "(Đã thanh toán...)" bên trong thẻ định kỳ bị dài -> Xếp dọc */
+    .savings-goal-actions-bar > div {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+        align-items: flex-start;
+        max-width: 100%;
     }
 
-        .bottom-nav-item span {
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            max-width: 60px; /* Chống chữ làm đẩy các nút khác */
+        .savings-goal-actions-bar > div span {
+            margin-left: 0 !important;
+            white-space: normal;
+            word-break: break-word;
         }
 
-    /* --- TASK 1 & 2: Fix tràn màn hình (Overflow) Chi phí định kỳ & Demo Mode --- */
-    /* Ép tất cả các thẻ Card không được to hơn màn hình */
-    .budget-item-card, .tx-item, .surface-card {
-        max-width: 100%;
-        min-width: 0;
-        overflow: hidden; /* Cắt phần tử thừa nếu có */
-    }
-
-    /* Ép ngắt chữ (word-break) cho các đoạn text dài không có khoảng trắng */
-    .budget-item-card__title,
-    .budget-item-card__subtitle,
-    .tx-item__note,
-    .tx-item__category,
-    .budget-metric__val {
-        word-break: break-word;
-        overflow-wrap: break-word;
-        white-space: normal;
-    }
-
-    /* Đảm bảo flexbox chia tỷ lệ đúng, không ép tràn ngang */
-    .budget-item-card__top {
-        flex-wrap: wrap;
-    }
-
-    .budget-item-card__title-group {
-        min-width: 0;
-        flex: 1; /* Cạnh tranh chiều rộng linh hoạt */
-    }
-
-    /* Xử lý riêng cho cụm nút thao tác (Thêm, Xóa, Xác nhận) */
-    .savings-goal-actions-bar,
-    .tx-item__actions {
-        flex-wrap: wrap;
-        min-width: 0;
-    }
+    /* --- KẾT THÚC BẢN VÁ FIX LỖI --- */
 }
 
 /* ==========================================================================
