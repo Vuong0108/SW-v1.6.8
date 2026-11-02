@@ -1,5 +1,5 @@
 const CACHE_PREFIX = 'student-wallet-cache-';
-const CACHE_VERSION = 'v1.6.2'; // Thay đổi version này mỗi khi bạn deploy bản mới
+const CACHE_VERSION = 'v1.6.4'; // Thay đổi version này mỗi khi bạn deploy bản mới
 const CACHE_NAME = CACHE_PREFIX + CACHE_VERSION;
 
 // Đã bổ sung đầy đủ CSS và JS
