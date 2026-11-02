@@ -1,4 +1,4 @@
-﻿/* ==========================================================================
+/* ==========================================================================
         1. DESIGN TOKENS
         ========================================================================== */
 :root {
@@ -505,6 +505,12 @@ a {
 }
 
 .header__right {
+    /* Ẩn nút Settings trên Top Header đối với màn hình Desktop */
+    .mobile-header-settings {
+        display: none;
+        padding: var(--space-2);
+        border-radius: var(--radius-md);
+    }
     display: flex;
     align-items: center;
     gap: var(--space-4);
@@ -2733,6 +2739,64 @@ textarea.form-control {
 
     .type-segmented--four {
         grid-template-columns: repeat(2, 1fr);
+    }
+    /* --- TASK 3: Hiển thị Settings Header trên Mobile --- */
+    .mobile-header-settings {
+        display: flex;
+    }
+
+    /* --- TASK 4: Ép 5 mục Bottom Nav hiển thị đẹp --- */
+    .bottom-nav {
+        justify-content: space-evenly;
+        padding: var(--space-2) 0 calc(var(--space-2) + env(safe-area-inset-bottom, 0px));
+    }
+
+    .bottom-nav-item {
+        font-size: 0.625rem; /* ~10px để nhét vừa 5 chữ */
+        padding: var(--space-1);
+    }
+
+        .bottom-nav-item span {
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-width: 60px; /* Chống chữ làm đẩy các nút khác */
+        }
+
+    /* --- TASK 1 & 2: Fix tràn màn hình (Overflow) Chi phí định kỳ & Demo Mode --- */
+    /* Ép tất cả các thẻ Card không được to hơn màn hình */
+    .budget-item-card, .tx-item, .surface-card {
+        max-width: 100%;
+        min-width: 0;
+        overflow: hidden; /* Cắt phần tử thừa nếu có */
+    }
+
+    /* Ép ngắt chữ (word-break) cho các đoạn text dài không có khoảng trắng */
+    .budget-item-card__title,
+    .budget-item-card__subtitle,
+    .tx-item__note,
+    .tx-item__category,
+    .budget-metric__val {
+        word-break: break-word;
+        overflow-wrap: break-word;
+        white-space: normal;
+    }
+
+    /* Đảm bảo flexbox chia tỷ lệ đúng, không ép tràn ngang */
+    .budget-item-card__top {
+        flex-wrap: wrap;
+    }
+
+    .budget-item-card__title-group {
+        min-width: 0;
+        flex: 1; /* Cạnh tranh chiều rộng linh hoạt */
+    }
+
+    /* Xử lý riêng cho cụm nút thao tác (Thêm, Xóa, Xác nhận) */
+    .savings-goal-actions-bar,
+    .tx-item__actions {
+        flex-wrap: wrap;
+        min-width: 0;
     }
 }
 
