@@ -2746,9 +2746,10 @@ textarea.form-control {
     .type-segmented--four {
         grid-template-columns: repeat(2, 1fr);
     }
-    /* --- BẮT ĐẦU BẢN VÁ FIX LỖI --- */
 
-    /* 1. Ép nút Settings hiện lên trên Mobile một cách chắc chắn */
+    /* --- BẮT ĐẦU BẢN VÁ FIX LỖI RESPONSIVE (ULTIMATE) --- */
+
+    /* 1. Ép nút Settings hiện lên trên Mobile */
     .mobile-header-settings {
         display: flex !important;
     }
@@ -2757,39 +2758,134 @@ textarea.form-control {
         gap: var(--space-2);
     }
 
-    /* 2. Fix tràn các Tab "Thu chi | Trợ cấp | Định kỳ" -> Xếp dọc xuống dòng */
+    /* 2. Căn chỉnh Bottom Nav cho 5 mục không bị chèn */
+    .bottom-nav {
+        justify-content: space-evenly;
+        padding: var(--space-2) 0 calc(var(--space-2) + env(safe-area-inset-bottom, 0px));
+    }
+
+    .bottom-nav-item {
+        font-size: 0.625rem;
+        padding: var(--space-1);
+    }
+
+        .bottom-nav-item span {
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-width: 60px;
+        }
+
+    /* 3. KHÓA TỬ HUYỆT: Giới hạn toàn bộ Card và Khung chứa để không bao giờ phình quá màn hình */
+    .surface-card,
+    .kpi-card,
+    .welcome-card,
+    .budget-period-toolbar,
+    .tx-workspace-tabs,
+    .filter-bar,
+    .budget-item-card,
+    .tx-item,
+    .empty-state-box,
+    .goal-drawer-panel,
+    .ai-insight-block,
+    .top-category-Banner,
+    .budget-alert-banner {
+        width: 100%;
+        max-width: 100%;
+        min-width: 0;
+        box-sizing: border-box;
+    }
+
+    /* 4. Ép các thẻ con bên trong Flexbox phải co lại khi text quá dài */
+    .tx-item__left,
+    .budget-item-card__title-group,
+    .tx-item__info,
+    .budget-alert-banner__left,
+    .top-category-Banner__info,
+    .cashflow-row__meta {
+        min-width: 0;
+        max-width: 100%;
+        flex: 1;
+    }
+
+        /* 5. Ép NGẮT DÒNG cho mọi text cứng đầu trong Demo Mode */
+        .tx-item__note,
+        .budget-item-card__title,
+        .budget-item-card__title span,
+        .budget-item-card__subtitle,
+        .tx-item__category,
+        .budget-metric__val,
+        .budget-status-badge,
+        .cycle-badge,
+        .tx-type-pill,
+        .btn-chip,
+        .cashflow-row__meta span,
+        .ai-insight-block__desc,
+        .budget-alert-banner__left span,
+        .welcome-card__text {
+            white-space: normal !important;
+            word-wrap: break-word;
+            word-break: break-word;
+            height: auto;
+            line-height: 1.4;
+            max-width: 100%;
+        }
+
+    .budget-status-badge, .cycle-badge {
+        text-align: left;
+    }
+
+    /* 6. Fix giao diện Tab Thu chi / Trợ cấp / Định kỳ thành lưới 2 cột */
     .tx-workspace-tabs .type-segmented {
-        display: flex;
-        flex-direction: column;
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
         width: 100%;
         gap: var(--space-2);
     }
 
-    .tx-workspace-tabs .type-seg-btn {
-        white-space: normal;
-        width: 100%;
-        padding: var(--space-3);
-    }
-
-    /* 3. Fix cụm chữ "(Đã thanh toán...)" bên trong thẻ định kỳ bị dài -> Xếp dọc */
-    .savings-goal-actions-bar > div {
-        display: flex;
-        flex-direction: column;
-        gap: 4px;
-        align-items: flex-start;
-        max-width: 100%;
-    }
-
-        .savings-goal-actions-bar > div span {
-            margin-left: 0 !important;
-            white-space: normal;
-            word-break: break-word;
+        .tx-workspace-tabs .type-segmented button:last-child {
+            grid-column: span 2;
         }
 
-    /* --- KẾT THÚC BẢN VÁ FIX LỖI --- */
-}
+    .tx-workspace-tabs .type-seg-btn {
+        white-space: normal;
+        padding: var(--space-2);
+    }
 
-/* ==========================================================================
+    /* 7. Fix khối thao tác (Xác nhận/Thanh toán) trong Trợ cấp/Định kỳ */
+    .savings-goal-actions-bar {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: var(--space-3);
+        width: 100%;
+    }
+
+        .savings-goal-actions-bar > div {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            align-items: flex-start;
+            width: 100%;
+        }
+
+            .savings-goal-actions-bar > div span {
+                margin-left: 0 !important;
+            }
+
+    .savings-goal-btn-group {
+        width: 100%;
+        justify-content: flex-start;
+    }
+
+    /* 8. Fix Table ở trang Phân tích không bóp méo thẻ cha */
+    .comparison-table-wrap {
+        width: 100%;
+        overflow-x: auto;
+    }
+
+    /* --- KẾT THÚC BẢN VÁ FIX LỖI RESPONSIVE (ULTIMATE) --- */
+
+        /* ==========================================================================
         10. ANIMATIONS
         ========================================================================== */
 @keyframes fadeSlideIn {
